@@ -1,0 +1,13 @@
+Windows 窗口快捷键
+Win + tab 多任务
+Alt + Esc
+Win + B 系统托盘
+Win + 数字 托盘第几个
+Win + Shift + 数字 新实例
+Win + Alt + 数字 相当于右键第几个
+
+虚拟桌面
+Win Tab
+Win Ctrl D 创建
+Win Ctrl F4 关闭
+Win Ctrl <-  (或->) 左右切换

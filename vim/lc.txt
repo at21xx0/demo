@@ -1,0 +1,290 @@
+按esc 或 刚进入 模式命令输入模式
+:wq 保存并退出
+:w! 保存
+:q! 退出
+hjkl  <- \|/ /|\ ->
+hjkl  左下上右
+esc 
+i 编辑
+o 下一行第一个字符 编辑
+a 光标后一个字符编辑
+x 删除
+~ 没有字符
+然后，我想说的是，有了linux vim 我可以不用鼠标了（触屏）
+[Ctrl]+[f] 向下移动移动一页，相当于 [Page Down]
+[Ctrl]+[b] 向上移动移动一页，相当于 [Page Up]
+[Ctrl]+[d] 向下半屏
+[Ctrl]+[u] 向上半屏
++ 光标移动到非空格字符的下一行
+- 光标移动到非空格字符的上一行
+n<space> n表示数字，比如20<space>向后移动20个字符距离
+0或功能键[Home] 光标移动到这一行最前面的字符
+$或功能键[End] 光标移动到这一行最后面的字符
+G 移动到这个文件的最后一行
+nG n代表数字 移动到第n行
+gg光标移动到这个文档的第一行
+n<Enter> 光标向下移动n行
+
+yy复制一行
+p 粘贴
+P 粘贴
+v [-- VISUAL --]
+  v 取消
+  hjkl 左下上右移动
+  x 删除
+  y 复制
+:! shell 命令  执行shell命令
+
+
+
+
+Netrw
+
+:E 打开
+:edit 指定文件夹
+:Sex 拆分窗口，上下
+:Sexplore 同上
+:Vex 拆分窗口，左右
+:Vexplore 同上
+:Vex 指定文件夹
+
+<enter>打开文件(夹)
+:bdelete 退出
+:edit 指定文件夹
+排序，指定
+i 瘦长宽和树形
+d 新建目录
+D 删除
+% 新建文件
+r 反向排序
+R 重命名
+s 选择排序方式 名称，时间，大小
+S 自定义排序
+t 新标签页打开文件，文件夹
+u 返回之前访问的目录
+U 返回之后访问的目录
+v 新窗口打开文件/目录，水平分割
+o 新窗口打开文件/目录，垂直分割
+x 关联打开
+X 执行文件通过 System()
+p 预览文件
+P 在之前的窗口预览文件
+[Ctrl]+l 刷新 netrw
+[Ctrl]+h 输入关键字，隐藏文件名相关的文件
+- 上一级目录
+qf 显示文件信息
+
+
+多文件
+
+$ vim [file ..] // 打开 多个文件
+:n 下一个文件
+:N 上一个文件
+:2N 前两个文件
+:e 打开文件
+
+tab
+
+gT 前一个标签
+gt 下一个标签
+:tabe file 新文件
+:tabn 下一个标签
+:tabp 前一个标签
+:tabclose 关闭标签
+:tabfirst 切换到第一个标签
+:tabr 切换到第一个标签
+:tablast 切换到最后一个标签
+:tabm 0 把标签移到第一个(最左面)(序号是从零开始的)
+Ctrl-PgDn 下一个标签
+Ctrl-PgUp 前一个标签
+netrw中按t打开新tab
+// 配置
+	set showtabline=1 "新标签才有标签栏目
+	set showtabline=2 "总显示标签栏
+	set showtabline=0 "总不显示标签栏
+:tabo 关闭除当前标签外地所有标签 tabonly
+:tabdo 多标签命令
+
+
+
+
+窗口
+
+$ vim -o [file ..] # 水平分割
+$ vim -O [file ..] # 垂直分割
+:split 上下窗口
+:sp 同 :split
+:vsplit 左右窗口
+:vsp 同 :vsplit
+:new 水平编辑新文件
+:vnew 垂直编辑新文件
+:sview
+Ctrl + w n 同 :new
+Ctrl + w s 同 :split
+:set mouse=a " 启用鼠标支持
+Ctrl + w w 切换窗口
+Ctrl + w h 切换至左面窗口
+Ctrl + w j 切换至下面窗口
+Ctrl + w k 切换至上面窗口
+Ctrl + w l 切换至右面窗口
+Ctrl + w t 切换至顶部窗口
+Ctrl + w b 切换至底部窗口
+Ctrl + w p 切换至上一个窗口
+Ctrl + w x 窗口上下调换
+Ctrl + w H 窗口移动到最左端
+Ctrl + w K 窗口移动到最顶端
+Ctrl + w J 窗口移动到最底端
+Ctrl + w L 窗口移动到最右端
+Ctrl + w T 窗口移动到新标签页
+:3 split file 尺寸为3的窗口 
+:3split file 尺寸为3的窗口
+:resize 3 调整高度为3行 Ctrl + w _
+:resize +3 高度增加3行 Ctrl + w +
+:resize -3 高度减少3行 Ctrl + w -
+Ctrl + w = 窗口大小相等
+:vert resize 3 调整宽度为3 Ctrl + w | 
+:vert resize +3 Ctrl + w >
+:vert resize -1 Ctrl + w <
+Ctrl + w q 退出窗口 :quit
+Ctrl + w c 关闭窗口 :close
+
+录制宏
+
+q + [a-zA-Z0-9] 录制宏 再次按q结束
+@[a-zA-Z0-9] 使用宏
+如 q:!gcc main.c -Wall -Werror -O2 && ./a.out \nq 录制编译并执行
+
+
+terminal
+
+:term 启动终端 :ter :terminal
+:vert ter 水平
+Ctrl + w :vert term 在打开一个水平terminal
+
+
+补充
+
+Esc 命令模式 Ctrl + [  Ctrl + c
+~ 大小写转换
+`.  跳转到标注
+! 外部过滤器
+@ 运行宏
+# prev ident (搜索上一个与光标文字相同的内容)
+$ 行尾
+% 匹配括号 (){}[]
+& 重复 :s
+* next ident (下一个)
+( 句首
+0 硬行首
+) 下一句首
+_ soft bol down
+- 前一行首
++ 后一行首
+== 自动格式化
+Q 切换到ex模式
+q 录制
+W 下一单词
+w 下一单词
+E 词尾
+e 词尾
+R 替换模式(按ESC结束)
+r 替换字符串
+T back till
+t till
+Y 拷贝 (1行)
+yy 拷贝
+y2j 拷贝本行和下面的两行
+u 撤销命令
+Ctrl + r 反撤销
+U 撤销行内命令
+I 插入到行首
+i 插入模式
+O 分段(前)(在本行上面新插入一行)
+o 分段(后)
+P 粘贴(前) (光标之前或前一行)
+p 粘贴(后)
+2p 粘贴两次
+{ 段首
+} 段尾
+[. 杂项 // 
+]. 杂项
+A 在行尾附加
+a 附加 (光标后移，插入)
+S 删除行并插入
+s 删除字符并插入
+D 删除行
+dd 删除行
+d2j  ...
+dw 删除词
+d$ 删除到行首
+d/abc 删除到下一次出现abc出
+d?abc ...
+F 行内字符反向查找
+f 行内字符查找 (ft 光标定位到t)
+gg 文首
+gf 打开光标所在的文件名
+gu 小写
+gU 大写
+H 屏幕顶行
+J 合并两行
+K 帮助
+L 屏幕尾行
+h <-
+j v
+k ^
+l ->
+: ex命令
+; 重复t/T/f/F
+" 寄存器标识
+	"ayy 复制一行
+	"ap 粘贴
+	[a-zA-Z0-9] 皆可替换a
+' 跳转到标注的行首
+| 行首/列
+\ 未用
+Z 退出
+	ZZ 保存退出
+	ZQ 不保存退出
+z 附加命令
+zt 光标位置为行首
+zb 底端
+zz 中间
+zh scroll left
+zl scrol right
+X 退格
+x 删除(字符)
+C 修改至行末
+c 修改
+V 可视行模式 (选择多行文本，按y复制，按x剪切，按y粘贴，按=格式化)
+v 可视模式
+B 前一单词
+b 前一单词
+N 查找上一处
+n 查找下一处
+M 屏幕中间行
+m 设置标注 (mark)
+	ma 标记当前行
+	'a 跳转到标记的行
+	[a-zA-Z0-9] 皆可替换a
+<< 反缩进
+>> 缩进
+, 反向t/T/f/F
+. 重复命令
+? 向前搜索
+/ 向后搜索
+Ctrl + f 翻页，向上
+Ctrl + b 翻页，向上
+:a 插入文本，按Esc结束
+:s/val/v2 把val替换为v2 (本来)
+:%s/val/v2 替换，整个文件
+:%s/val/v2/g 替换，整个文件，一行中的每一处
+:.,$/val/v2/g 当前行到行末
+
+
+
+
+
+
+
+
+
