@@ -1,0 +1,46 @@
+#!/usr/bin/bash
+
+function e()
+{
+	if [ $? != 0 ]
+	then
+		exit 1
+	fi
+}
+
+#!/usr/bin/bash
+
+mkdir -p build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$PWD/stage
+e
+# cmake -H. -Bbuild && cd build
+# make -j
+# 默认 make all
+# all所有目标  clean 删除所有生成的文件 rebuild_cache 将调用CMake为源文件生成依赖(如果有的话) edit_cache 这个目标允许直接编辑缓存
+cmake --build . -- -j
+e
+
+# -- 后相当于 make 的参数
+./bin/d
+e
+
+# make test
+#cmake --build . -- test
+# cmake --build . --target test
+# cmake --build . --target RUN_TESTS
+# ctest --output-on-failure
+# -v 详细输出 -vv 更详细
+# --parallel 4 4是核心数，并行测试也可设置环境变量CTEST_PARALLEL_LEVEL
+# make install
+# cmake --build . --target package_source
+# cmake --build . --target package
+# cpack -G RPM
+
+
+# conda build conda-recipe
+# conda install --use-local demo-conda-example
+# conda remove demo-conda-example
+
+
+

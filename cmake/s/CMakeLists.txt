@@ -1,0 +1,115 @@
+
+cmake_minimum_required(VERSION 3.8 FATAL_ERROR) # 最小版本，小于报错
+project(
+	s2t
+	VERSION
+		1.0
+	LANGUAGES
+		C CXX
+)
+
+configure_file(print_project_name.cmake.in print_project_name.cmake @ONLY)
+install(
+	SCRIPT
+		${CMAKE_CURRENT_BINARY_DIR}/print_project_name.cmake
+)
+
+
+set_property(DIRECTORY PROPERTY EP_BASE ${CMAKE_BINARY_DIR}/subprojects)
+
+set(STAGED_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/stage)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
+
+find_package(s 0 CONFIG QUIET)
+if(s_FOUND)
+	get_property(_loc TARGET s::s2-shared PROPERTY LOCATION)
+	message(STATUS "Found message: ${_loc} (found version ${message_VERSION})")
+	add_library(package_s INTERFACE)
+else()
+	include(ExternalProject)
+	ExternalProject_Add(
+		package_s
+		# GIT_REPOSITORY
+			# https://github.com/s/s.git
+		# GIT_TAG
+			# master
+		SOURCE_DIR
+			${CMAKE_SOURCE_DIR}/s
+		UPDATE_COMMAND
+			""
+		CMAKE_ARGS
+			-DCMAKE_INSTALL_PREFIX=${STAGED_INSTALL_PREFIX}
+			-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+			-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+			-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+		CMAKE_CACHE_ARGS
+			-DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+			-DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+		TEST_AFTER_INSTALL
+			1
+		# DOWNLOAD_NO_PROGRESS
+			# 1
+		LOG_CONFIGURE
+			1
+		LOG_BUILD
+			1
+		LOG_INSTALL
+			1
+		)
+	if(WIN32 AND NOT CYGWIN)
+		set(DEF_s_DIR ${STAGED_INSTALL_PREFIX}/CMake)
+	else()
+		set(DEF_s_DIR ${STAGED_INSTALL_PREFIX}/share/cmake/s)
+	endif()
+	file(TO_NATIVE_PATH "${DEF_s_DIR}" DEF_s_DIR)
+	set(s_s_DIR ${DEF_s_DIR} FORCE)
+		# CACHE PATH "Path to internally built messageConfig.cmake" FORCE)
+endif()
+
+
+
+
+
+
+include(ExternalProject)
+ExternalProject_Add(${PROJECT_NAME}_core
+  DEPENDS
+		package_s
+  SOURCE_DIR
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+  CMAKE_ARGS
+    -DCMAKE_INSTALL_PREFIX=${STAGED_INSTALL_PREFIX}
+    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+    -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+    -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+		# -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
+		# -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
+		# -DCMAKE_CXX_STANDARD_REQUIRED=${CMAKE_CXX_STANDARD_REQUIRED}
+		# -DCMAKE_C_STANDARD=${CMAKE_C_STANDARD}
+		# -DCMAKE_C_EXTENSIONS=${CMAKE_C_EXTENSIONS}
+		# -DCMAKE_C_STANDARD_REQUIRED=${CMAKE_C_STANDARD_REQUIRED}
+		$<$<BOOL:${s_s_DIR}>:-Ds_DIR=${s_s_DIR}>
+  CMAKE_CACHE_ARGS
+    -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
+    -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
+    -DCMAKE_PREFIX_PATH:PATH=${CMAKE_PREFIX_PATH}
+  BUILD_ALWAYS
+    1
+	LOG_CONFIGURE
+		1
+	LOG_BUILD
+		1
+	LOG_INSTALL
+		1
+  )
+
+# this one mimicks using DESTDIR
+install(
+  DIRECTORY
+    ${STAGED_INSTALL_PREFIX}/
+  DESTINATION
+    .
+  USE_SOURCE_PERMISSIONS
+  )
