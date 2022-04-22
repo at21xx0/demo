@@ -217,7 +217,7 @@ function(add_target)
 		if(NOT _target_export_name)
 			set(_target_export_name ${_target_name})
 		endif()
-		foreach(_t IN ITEMS static shared module)
+		foreach(_t IN ITEMS shared module static)
 			if(_target_${_t} AND NOT EXISTS ${CMAKE_BINARY_DIR}/${target_includedir}/${_target_export_name}Export.h)
 				generate_export_header(
 					${_target_name}-${_t}
