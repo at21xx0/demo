@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.8)
 project(
 	s
 	VERSION 0.1
@@ -6,33 +6,15 @@ project(
 )
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED True)
+set(CMAKE_C_FLAGS "-W -Wall -Werror -O2")
 include(${PROJECT_SOURCE_DIR}/cmake/project2.cmake)
-set(CMAKE_C_FLAGS "-W -Wall")
-add_target(name s1 on static)
-add_target(name s2e on object)
 add_target(
-	name s2
-	link s2e-object # 改成static需要安装
-	install static shared
-	on export
-	public_header "${PROJECT_SOURCE_DIR}/src/include/s2.h;${PROJECT_BINARY_DIR}/include/s2Export.h"
+	name stest
+	link s1-static s2-shared
+	install executable
 )
-add_target(name stest link s1-static s2-shared install executable)
-if(UNIX)
-	set(_dl "dl") # libdl.so
-elseif(WIN32)
-	# win32 平台代码没有写
-endif()
-add_target(name dlt link ${_dl} on executable)
-#[[
-# public 中安装了
-add_target(
-	files
-		${PROJECT_SOURCE_DIR}/src/include/s2.h
-		${PROJECT_BINARY_DIR}/include/s2Export.h
-)
-]]
-target_install()
+target_final()
+
 add_custom_target(
 	stest-link
 	ALL
@@ -53,7 +35,7 @@ include(${PROJECT_SOURCE_DIR}/cmake/pack.cmake)
 
 enable_testing()
 add_test(
-	NAME dlt
+	NAME dlt_test
 	COMMAND $<TARGET_FILE:dlt>
 	WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/bin
 )

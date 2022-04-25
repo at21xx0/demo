@@ -1,0 +1,4 @@
+link s2e-object # 改成static需要安装
+install static shared
+on export
+public_header "${PROJECT_SOURCE_DIR}/src/include/s2.h;${PROJECT_BINARY_DIR}/include/s2Export.h"

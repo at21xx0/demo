@@ -15,7 +15,8 @@ e
 cmake --build .
 e
 
-cmake --build . --target install
+# cmake --build . --target install
+# ./h
 
 
 
