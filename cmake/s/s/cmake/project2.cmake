@@ -366,8 +366,8 @@ function(add_target)
 			enable_testing()
 		endif()
 		add_test(
-			NAME dlt_test
-			COMMAND $<TARGET_FILE:dlt> ${_target_test_arg}
+			NAME ${_target_name}_test
+			COMMAND $<TARGET_FILE:${_target_name}> ${_target_test_arg}
 			LABELS ${_target_test_labels}
 			WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${target_bindir}
 		)
@@ -477,8 +477,12 @@ macro(target_config_file)
 	foreach(_f IN LISTS _fl)
 		file(READ ${_f} _fv)
 		string(REGEX REPLACE "/[^/]*$" "" _out ${_f})
-		set(_current_patch "patch ${_out}\n")
-		string(REGEX REPLACE "(\n[a-zA-Z0-9-_+]+)(:)" "\\1" _t "${_current_patch}\n${_fv}\n") # \npatch "
+		if(_fv MATCHES "^patch ")
+			set(_current_patch "")
+		else()
+			set(_current_patch "patch ${_out}\n")
+		endif()
+		string(REGEX REPLACE "(\n[a-zA-Z0-9-_+]+)(:)" "\\1" _t "${_current_patch}${_fv}\n") # \npatch "
 		string(REPLACE ";" "__v__SEMI__v__" _t "${_t}")
 		# string(REGEX MATCHALL "patch [.\n\\r]*?(?=patch)" _list ${_t}) # ???
 		string(REGEX MATCHALL "[^\n]+\n" _lines "${_t}")
