@@ -10,9 +10,9 @@ function e()
 
 mkdir -p build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=$PWD/prefix -G"Ninja" ..
+cmake -DCMAKE_INSTALL_PREFIX=$PWD/prefix .. # -G"Ninja"
 e
-cmake --build .
+cmake --build . --parallel
 e
 
 cmake --build . --target install

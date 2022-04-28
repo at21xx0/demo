@@ -1,0 +1,11 @@
+name s1-test
+sources s1_test.c ../src/s1/s1.c
+
+name s1-test-1
+arg 1 1
+
+name s1-test-2
+arg 2 2
+
+name s1-test-3
+arg 3 3

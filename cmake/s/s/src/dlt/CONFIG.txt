@@ -1,3 +1,0 @@
-name dlt
-link $<${UNIX}:"dl">
-on executable

@@ -1,10 +1,13 @@
 
-set(target_source_dir ${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/tests ${PROJECT_SOURCE_DIR})
-set(target_default_package ON)
+set(target_source_dir ${CMAKE_SOURCE_DIR}/src ${CMAKE_SOURCE_DIR}/tests ${CMAKE_SOURCE_DIR})
+# set(target_cmake_package ON)
 set(target_final_link ON)
 
 
-if(NOT target_bindir)
+if(NOT DEFINED target_default_labels)
+	set(target_default_labels "quick")
+endif()
+if(NOT DEFINED target_bindir)
 	include(GNUInstallDirs)
 	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
@@ -13,17 +16,10 @@ if(NOT target_bindir)
 	set(target_bindir ${CMAKE_INSTALL_BINDIR})
 	set(target_libdir ${CMAKE_INSTALL_LIBDIR})
 	set(target_includedir ${CMAKE_INSTALL_INCLUDEDIR})
-	if(WIN32 AND NOT CYGWIN)
-		set(_dir CMake)
-	else()
-		set(_dir share/cmake/${PROJECT_NAME})
-	endif()
-	set(target_cmakedir ${_dir})
-	unset(_dir)
 endif()
 
 if(NOT target_default_include)
-	set(target_default_include ${PROJECT_SOURCE_DIR} ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src/include ${PROJECT_SOURCE_DIR}/tests/include)
+	set(target_default_include ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/src/include ${CMAKE_CURRENT_SOURCE_DIR}/tests/include)
 	foreach(_dir IN LISTS target_default_include)
 		if(NOT EXISTS ${_dir})
 			list(REMOVE_ITEM target_default_include ${_dir})
@@ -76,8 +72,8 @@ include(CMakePackageConfigHelpers)
 
 function(add_target)
 	set(_options)
-	set(_oneValueArgs name version epport_name sources_dir test_labels patch)
-	set(_multiValueArgs depends sources include options link properties files install definitions ignore public_header hidden test_arg on off)
+	set(_oneValueArgs name version epport_name sources_dir labels install_includedir patch)
+	set(_multiValueArgs depends sources include options link properties files install definitions ignore public_header hidden arg on off)
 
 	set(_target_default_on auto_sources auto_sources_dir independent auto_include auto_definitions rpath auto_version export_hidden_static sources_rel_patch)
 	set(_target_default_off static module shared object executable test export)
@@ -92,31 +88,33 @@ function(add_target)
 	# message(STATUS "options: ${options}")
 	if(NOT _target_name)
 		if(_target_patch)
-			string(REGEX REPLACE "/$" "" _target_patch "${_target_patch}")
+			string(REGEX REPLACE "[/\\]$" "" _target_patch "${_target_patch}")
 			string(REGEX MATCH "[a-zA-Z0-9+_-]+$" _target_name "${_target_patch}")
 		else()
 			if(_target_files)
 				install(
 					FILES ${_target_files}
-					DESTINATION ${target_includedir}
+					DESTINATION ${_target_includedir}
 					)
 			endif()
 			return()
 		endif()
 	endif()
-	if(NOT _target_static AND NOT _target_shared AND NOT _target_object AND NOT _target_moudle)
+	if(_target_arg)
+		set(_target_test ON)
+		list(APPEND _target_on test)
+	endif()
+	if(NOT _target_static AND NOT _target_shared AND NOT _target_object AND NOT _target_moudle AND NOT _target_test)
 		set(_target_executable ON)
 		set(_target_on executable)
 	endif()
 	message(STATUS "${_target_name}: ${_target_on} ${_target_install}")
 	foreach(_t IN ITEMS object static shared module)
-		list(FIND target_targets ${_target_name}-${_t} _out)
-		if(NOT _out EQUAL -1)
+		if(TARGET ${_target_name}-${_t})
 			set(_target_${_t} OFF)
 		endif()
 	endforeach()
-	list(FIND target_targets ${_target_name} _out)
-	if(NOT _out EQUAL -1)
+	if(TARGET ${_target_name})
 		set(_target_executable OFF)
 	endif()
 	if(_target_auto_sources)
@@ -198,7 +196,7 @@ function(add_target)
 			set_target_properties(
 				${_target_name}
 				PROPERTIES
-					# POSITION_INDEPENDENT_CODE 1
+					POSITION_INDEPENDENT_CODE 1
 					SKIP_BUILD_RPATH OFF
 					BUILD_WITH_INSTALL_RPATH OFF
 					INSTALL_RPATH "${target_rpath}"
@@ -237,8 +235,8 @@ function(add_target)
 		if(NOT _target_version)
 			set(_f ${_target_sources_dir}/version) # VERSION
 			if(EXISTS ${_f} AND NOT _target_version)
-				file(READ ${_f} _v)
-				if(_v MATCHES "PROJECT_VERSION")
+				file(READ ${_f} _v) 
+				if(_v MATCHES "^PROJECT_VERSION$")
 					set(_v "${PROJECT_VERSION}")
 				endif()
 				string(STRIP "${_v}" _target_version)
@@ -291,7 +289,7 @@ function(add_target)
 		if(_target_install_export)
 			install(
 				FILES
-					${CMAKE_BINARY_DIR}/${target_cmakedir}/${_target_export_name}Export.h
+					${CMAKE_BINARY_DIR}/${target_include}/${_target_export_name}Export.h
 				DESTINATION ${target_include_dir}
 				COMPONENT dev
 			)
@@ -357,26 +355,54 @@ function(add_target)
 		endif()
 		# target_sources(${_t} PRIVATE ${_target_sources})
 	endforeach()
-	if(_target_test_arg)
-		set(_target_test)
+	set(target_targets ${target_targets} ${_targets} PARENT_SCOPE)
+	if(_target_install_targets)
+		install(
+			TARGETS
+				${_target_install_targets}
+			EXPORT
+				${PROJECT_NAME}Targets
+			ARCHIVE
+				DESTINATION ${target_libdir}
+				COMPONENT lib
+			LIBRARY
+				DESTINATION ${target_libdir}
+				COMPONENT lib
+			RUNTIME
+				DESTINATION ${target_bindir}
+				COMPONENT bin
+			PUBLIC_HEADER
+				DESTINATION ${target_includedir}
+				COMPONENT dev
+		)
+		set(target_cmake_packages ${target_cmake_packages} ${_target_install_targets} PARENT_SCOPE)
 	endif()
 	if(_target_test)
-		if(NOT target_enable_testing)
-			set(target_enable_testing ON PARENT_SCOPE)
-			enable_testing()
+		set(_v "${_target_name}")
+		while(_v MATCHES "\\-")
+			string(REGEX REPLACE "-[^-]*$" "" _v "${_v}")
+			if(TARGET ${_v})
+				break()
+			endif()
+		endwhile()
+		if(NOT TARGET ${_v})
+			message(FATAL_ERROR "name: ${_target_name}")
 		endif()
-		add_test(
-			NAME ${_target_name}_test
-			COMMAND $<TARGET_FILE:${_target_name}> ${_target_test_arg}
-			LABELS ${_target_test_labels}
-			WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${target_bindir}
-		)
+		if(NOT DEFINED _target_labels)
+			set(_target_labels ${target_default_labels})
+		endif()
+		if(_v STREQUAL _target_name)
+			set(_target_name "${_target_name}-test")
+		endif()
+		if(NOT TARGET ${_target_name})
+			add_test(
+				NAME ${_target_name}
+				# LABELS ${_target_labels}
+				WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/${target_bindir}
+				COMMAND $<TARGET_FILE:${_v}> ${_target_arg}
+			)
+		endif()
 	endif()
-	if(_target_install_targets)
-		set(target_install_targets ${target_install_targets} ${_target_install_targets} PARENT_SCOPE)
-		# target_install()
-	endif()
-	set(target_targets ${target_targets} ${_targets} PARENT_SCOPE)
 endfunction()
 
 function(target_link_all)
@@ -394,70 +420,10 @@ function(target_link_all)
 	unset(_sources)
 endfunction()
 
-macro(target_install)
-	if(target_install_targets)
-		install(
-			TARGETS
-				${target_install_targets}
-			EXPORT
-				${PROJECT_NAME}Targets
-			ARCHIVE
-				DESTINATION ${target_libdir}
-				COMPONENT lib
-			LIBRARY
-				DESTINATION ${target_libdir}
-				COMPONENT lib
-			RUNTIME
-				DESTINATION ${target_bindir}
-				COMPONENT bin
-			PUBLIC_HEADER
-				DESTINATION ${target_includedir}
-				COMPONENT dev
-		)
-		if(target_default_package)
-			install(
-				EXPORT
-					${PROJECT_NAME}Targets
-  			NAMESPACE
-					"${PROJECT_NAME}::"
-  			DESTINATION
-   		 		${target_cmakedir}
-  			COMPONENT
-   			 dev
- 			)
-			list(APPEND target_packages ${target_install_targets})
-			string(REPLACE ";" " " target_packages_ "${target_packages}") # 替换分隔符
-			write_basic_package_version_file(
-				${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-				VERSION ${PROJECT_VERSION}
-				COMPATIBILITY SameMajorVersion
-			)
-			configure_package_config_file(
-				${PROJECT_SOURCE_DIR}/cmake/DefaultConfig.cmake.in
-				${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-				INSTALL_DESTINATION ${target_cmakedir}
-			)
-			install(
-				FILES
-					${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-					${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-				DESTINATION ${target_cmakedir}
-				# COMPONENT dev
-			)
-			unset(target_packages_)
-		endif()
-		set(target_install_targets)
-	endif()
-endmacro()
-
-# include(${PROJECT_SOURCE_DIR}/cmake/check.cmake)
 macro(target_config_file)
 	set(_out_f ${CMAKE_BINARY_DIR}/config_targets.cmake)
 	set(_config_fn "CONFIG.txt")
-	file(GLOB_RECURSE _fl ${PROJECT_SOURCE_DIR}/${_config_fn})
-	if(NOT _fl)
-		return()
-	endif()
+	file(GLOB_RECURSE _fl ${CMAKE_CURRENT_SOURCE_DIR}/${_config_fn})
 	if(NOT EXISTS ${_out_f})
 		set(_t ON)
 	else()
@@ -469,57 +435,107 @@ macro(target_config_file)
 			endif()
 		endforeach()
 	endif()
-	if(NOT _t)
-		include(${_out_f})
-		return()
-	endif()
-	file(WRITE ${_out_f} "# ${_config_fn}\n")
-	foreach(_f IN LISTS _fl)
-		file(READ ${_f} _fv)
-		string(REGEX REPLACE "/[^/]*$" "" _out ${_f})
-		if(_fv MATCHES "^patch ")
-			set(_current_patch "")
-		else()
-			set(_current_patch "patch ${_out}\n")
-		endif()
-		string(REGEX REPLACE "(\n[a-zA-Z0-9-_+]+)(:)" "\\1" _t "${_current_patch}${_fv}\n") # \npatch "
-		string(REPLACE ";" "__v__SEMI__v__" _t "${_t}")
-		# string(REGEX MATCHALL "patch [.\n\\r]*?(?=patch)" _list ${_t}) # ???
-		string(REGEX MATCHALL "[^\n]+\n" _lines "${_t}")
-		set(_prefix_str "")
-		foreach(_line IN LISTS _lines)
-			if(_line MATCHES "^patch ")
-				string(REGEX REPLACE "^patch[ \t]+" "" _t "${_line}")
-				if(IS_ABSOLUTE "${_t}")
-					set(_current_patch "${_line}")
-				else()
-					set(_current_patch "patch ${_out}/${_t}")
-				endif()
-				set(_prev_patch ON)
-				file(APPEND ${_out_f} "${_prefix_str}add_target(\n${_current_patch}")
-				set(_prefix_str ")\n")
-				continue()
-			elseif(_line MATCHES "^name " AND NOT _prev_patch)
-				string(REGEX REPLACE "^name " ")\nadd_target(\n${_current_patch}name " _line ${_line})
+	if(_t)
+		file(WRITE ${_out_f} "# ${_config_fn}\n")
+		foreach(_f IN LISTS _fl)
+			file(READ ${_f} _fv)
+			string(REGEX REPLACE "/[^/]*$" "" _out ${_f})
+			if(_fv MATCHES "^([^a-z0-9A-Z-_+]+[^\n]*\n)*patch ")
+				set(_current_patch "")
 			else()
-				set(_prev_patch OFF)
+				set(_current_patch "patch ${_out}\n")
 			endif()
-			if(_line MATCHES "^public_header ")
-				message(STATUS "line: ${_line}")
-			endif()
-			string(REPLACE "__v__SEMI__v__" ";" _line "${_line}")
-			file(APPEND ${_out_f} "${_line}")
+			string(REGEX REPLACE "(\n[a-zA-Z0-9-_+]+)(:)" "\\1" _t "${_current_patch}${_fv}\n") # \npatch "
+			string(REPLACE ";" "__v__SEMI__v__" _t "${_t}")
+			# string(REGEX MATCHALL "patch [.\n\\r]*?(?=patch)" _list ${_t}) # ???
+			string(REGEX MATCHALL "[^\n]+\n" _lines "${_t}")
+			set(_prefix_str "")
+			foreach(_line IN LISTS _lines)
+				if(_line MATCHES "^patch ")
+					string(REGEX REPLACE "^patch[ \t]+" "" _t "${_line}")
+					if(IS_ABSOLUTE "${_t}")
+						set(_current_patch "${_line}")
+					else()
+						set(_current_patch "patch ${_out}/${_t}")
+					endif()
+					set(_prev_patch ON)
+					file(APPEND ${_out_f} "${_prefix_str}add_target(\n${_current_patch}")
+					set(_prefix_str ")\n")
+					continue()
+				elseif(_line MATCHES "^name " AND NOT _prev_patch)
+					string(REGEX REPLACE "^name " ")\nadd_target(\n${_current_patch}name " _line ${_line})
+				else()
+					set(_prev_patch OFF)
+				endif()
+				if(_line MATCHES "^public_header ")
+					message(STATUS "line: ${_line}")
+				endif()
+				string(REPLACE "__v__SEMI__v__" ";" _line "${_line}")
+				file(APPEND ${_out_f} "${_line}")
+			endforeach()
+			file(APPEND ${_out_f} ")\n")
 		endforeach()
-		file(APPEND ${_out_f} ")\n")
-	endforeach()
-	include(${_out_f})
+	endif()
+	if(EXISTS ${_out_f})
+		include(${_out_f})
+	endif()
 	# file(REMOVE ${_out_f})
 endmacro()
 
 macro(target_final)
+	target_config_file()
 	target_link_all()
-	target_install()
+	if(target_cmake_package)
+		if(target_cmakedir)
+			set(_cmakedir ${target_cmakedir})
+		elseif(WIN32 AND NOT CYGWIN)
+			set(_cmakedir CMake)
+		else()
+			set(_cmakedir share/cmake/${PROJECT_NAME})
+		endif()
+		install(
+			EXPORT
+				${PROJECT_NAME}Targets
+ 			NAMESPACE
+				"${PROJECT_NAME}::"
+ 			DESTINATION
+ 		 		${_cmakedir}
+			COMPONENT
+				dev
+ 		)
+		string(REPLACE ";" " " target_packages_ "${target_cmake_packages}") # 替换分隔符
+		set(target_packages_deps_ "")
+		foreach(_f IN LISTS target_cmake_package_deps)
+			file(READ ${_f} _fv)
+			string(APPEND target_packages_deps_ "${_fv}\n")
+		endforeach()
+		write_basic_package_version_file(
+			${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+			VERSION ${PROJECT_VERSION}
+			COMPATIBILITY SameMajorVersion
+		)
+		configure_package_config_file(
+			${CMAKE_CURRENT_LIST_DIR}/cmake/DefaultConfig.cmake.in
+			${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+			INSTALL_DESTINATION ${_cmakedir}
+		)
+		install(
+			FILES
+				${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake
+				${CMAKE_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+			DESTINATION ${_cmakedir}
+			COMPONENT dev
+		)
+		unset(target_packages_)
+		unset(target_packages_deps_)
+	endif()
 endmacro()
 
 target_update_rpath()
-target_config_file()
+enable_testing()
+
+foreach(_f IN LISTS target_cmake_package_deps)
+	include(${_f})
+endforeach()
+
+

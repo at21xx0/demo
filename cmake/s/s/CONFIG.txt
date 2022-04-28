@@ -1,7 +1,5 @@
-name: h
-sources: src/h/h.c
-link: m
-name h-test
-sources tests/h_test.c
-patch src/s1
+name: s1
+sources: src/s1/s1.c
 on static
+patch src/s2e
+on object
