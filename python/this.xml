@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<all title="title">
+<line title="line1">
+<name>
+Steve
+</name>
+<level>
+5
+</level>
+</line>
+<line title="line2">
+<name>
+Dalao
+</name>
+<level>
+None
+</level>
+</line>
+</all>

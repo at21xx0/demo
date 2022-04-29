@@ -1,0 +1,140 @@
+<svg version="1.1"
+     baseProfile="full"
+     width="300" height="300"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <defs>
+    <linearGradient id="gradient1"><stop class="stop1" offset="0%"/><stop class="stop2" offset="50%"/><stop stop-color="blue" offset="100%"/></linearGradient>
+    <linearGradient id="gradient2" x1="0" x2="0" y1="0" y2="1">
+      <stop class="stop1" offset="0%"/>
+      <stop class="stop2" offset="50%"/>
+      <stop stop-color="blue" offset="100%"/>
+    </linearGradient><!-- 垂直线性渐变 -->
+    <radialGradient cx="0.5" cy="0.5" r="0.5" id="radial1">
+      <stop class="stop1" offset="0%"/>
+      <stop class="stop2" offset="50%"/>
+      <stop class="stop3" offset="100%"/>
+    </radialGradient>
+    <radialGradient cx="0.5" cy="0.5" r="0.5" fx="0.25" fy="0.25" id="radial2" spreadMethod="repeat">
+      <stop class="stop1" offset="0%"/>
+      <stop class="stop2" offset="50%"/>
+      <stop class="stop3" offset="100%"/>
+    </radialGradient>
+    <!-- fx fy 为焦点 -->
+    <!-- spreadMethod(渐变终点效果): pad(默认) reflect repeat -->
+    <!-- gradientUnits: objectBoundingBox(默认) userSpaceOnUse -->
+    <pattern id="pattern1" x="0" y="0" width="20" height="20">
+      <polygon points="0 0, 20 20, 20 0" fill="red"/>
+      <polygon points="0 0, 20 20, 0 20" fill="blue"/>
+    </pattern>
+    <pattern id="pattern2" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <polygon points="0 0, 20 20, 20 0" fill="red"/>
+      <polygon points="0 0, 20 20, 0 20" fill="blue"/>
+    </pattern>
+    <!-- width 和 height 描述了下一次重复相隔多远 -->
+    <!-- -->
+    <clipPath id="clip1">
+      <rect x="170" y="60" width="20" height="10"/>
+    </clipPath>
+    <mask id="mask1">
+      <rect x="240" y="60" width="20" height="20" fill="url(#radial2)" opacity="0.8"/>
+      <!-- stroke-opacity stroke-opacity -->
+    </mask>
+    <filter id="filrer1" filterUnits="userSpaceOnUse" x="260" y="80" width="20" height="20">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="blur"/>
+      <!-- 高斯模糊 -->
+      
+    </filter>
+    <!-- feBlend feColorMatrix feComponentTransfer feComposite feConvolveMatrix feDiffuseLighting feDisplacementMap feFlood feGaussianBlur feImage feMerge feMorphology feOffset feSpecularLighting feTile feTurbulence feDistantLight fePointLight feSpotLight -->
+    
+    <style type="text/css"><![CDATA[
+      .stop1 { stop-color: red; }
+      .stop2 { stop-color: green; stop-opacity: 0.5; }
+      .stop3 { stop-color: blue; }
+    ]]></style>
+  </defs>
+
+
+  <rect x="0" y="0" height="100%" width="100%" fill="#00FF00"/>
+  <rect x="5" y="5" width="50" height="50" fill="#FA6872" rx="10" ry="10"/>
+  <!-- rect(长方形): x 相对于左上角坐标 y相当于左上角 width 宽度 height 高度 rx 圆角 x方位 ry y方位半径 -->
+  <!-- -->
+  <circle r="10" cx="70" cy="70" fill="red"/>
+  <!-- circle(圆形): r 半径 cx 圆心位置 cy 圆心位置 -->
+  <ellipse cx="100" cy="100" rx="5" ry="10" fill="blue"/>
+  <line x1="55" y1="75" x2="75" y2="40" stroke="black"/>
+  <polyline points="0 0,99 99,45 0,24 19" fill="none" stroke="black"/>
+  <polyline points="200 200,200 100,100 100,200 200" fill="none" stroke="black"/>
+  <!-- fill 内部颜色  stroke 边框颜色 -->
+  <polygon points="55 55, 5 5, 55 5" fill="red"/>
+  <path d="M 10 100"/>
+  <!-- d: 命令+参数 -->
+  <!-- 大写字母绝对定位，小写字母绝对定位 -->
+  <!-- M: Move to -->
+  <!-- L: Line to -->
+  <path d="M 10 95 L 20 80" stroke="red"/>
+  <path d="M 10 95 L 20 80" stroke="red"/>
+  <!-- H 绘制水平线 V 绘制竖直线 -->
+  <path d="M 10 95 H 20 V 80" stroke="red" fill="none"/>
+  <!-- Z: 闭合线路(不区分大小写) -->
+  <path d="M 100 150 L 100 200 C 100 150, 200 150, 200 200 L 200 150" stroke="red" fill="none"/>
+  <path d="M 110 160 L 110 210 C 110 150, 260 160, 210 210 L 260 160" stroke="blue" fill="none"/>
+  <!-- 贝塞尔曲线 C: -->
+  <path d="M 200 200 C 200 210, 210 210, 210 200 S 220 190, 220 200" stroke="#FA6872" fill="none"/>
+  <!-- S 对称 (相当于省略C 后第一组参数)-->
+  <path d="M 40 80 Q 40 40 80 40 T 120 80" stroke="#DDDDDD" fill="none"/>
+  <!-- Q 二次 -->
+  <!-- T 对称 (相当于 Q 省略第一组参数)(没有Q 是直线) -->
+  <path d="M 100 40 A 10 10 0 0 1 100 60" stroke="red" fill="none"/>
+  <!-- A rx ry x-axis-rotation large-arc-flag sweep-flag x y  -->
+  <!-- A 椭圆X半径 椭圆Y半径 X轴偏转角度 (大弧1,小弧0) (顺时针1,逆时针0) x终点 y终点 -->
+  <rect x="5" y="5" width="20" height="20" fill="blue" fill-opacity="0.5"/>
+  <!-- 可设置 fill-opacity stroke-opacity 透明度 -->
+  <polyline points="100 30, 120 10, 140 30" stroke="black" stroke-width="3" fill="none" stroke-linecap="butt" stroke-linejoin="miter"/>
+  <polyline points="150 30, 170 10, 190 30" stroke="black" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <polyline points="200 30, 220 10, 240 30" stroke="black" stroke-width="3" fill="none" stroke-linecap="square" stroke-linejoin="bevel"/>
+  <polyline points="250 30, 270 10, 290 30" fill="none" stroke="black" stroke-dasharray="2,4,2"/>
+  <!-- stroke-dashoffset stroke-miterlimit fill-rule -->
+  <rect x="10" y="200" width="20" height="20" fill="url(#gradient1)"/>
+  <rect x="30" y="200" width="20" height="20" fill="url(#gradient2)"/>
+  <rect x="10" y="220" width="20" height="20" fill="url(#radial1)"/>
+  <rect x="30" y="220" width="20" height="20" fill="url(#radial2)"/>
+  <rect x="10" y="240" width="20" height="20" fill="url(#pattern1)"/>
+  <rect x="100" y="240" width="200" height="60" fill="url(#pattern2)"/>
+  <text x="10" y="120" id="test1">test</text>
+  <!-- font-family font-style font-weight font-variant font-stretch font-size font-size-adjust kerning letter-spacing word-spacing text-decoration -->
+  <!-- text-anchor: start middle end inherit -->
+  <text x="10" y="160">
+    <tspan y="160">test2</tspan>
+    <tspan x="10" y="180" dx="10">test3</tspan>
+    <!--<tref xlink:href="#test1"/>-->
+  </text>
+  <!-- rotate 旋转角度 -->
+  <!-- textLength 给出字符串长度 -->
+  <!-- tref 内容 -->
+  <!-- textPath 字体走-->
+  <rect x="0" y="0" height="20" width="20" transform="translate(140,60)" fill="red"/>
+  <!-- 平移translate -->
+  <rect x="170" y="60" width="20" height="20" fill="red" transform="rotate(45)"/>
+  <!-- 旋转 -->
+  <rect x="170" y="60" width="20" height="20" fill="red" transform="skewX(30)"/>
+  <!-- 斜切 -->
+  <rect x="170" y="60" width="20" height="20" fill="red" transform="scale(0.5)"/>
+  <!-- 50% 缩放-->
+  <!-- matrix(a, b, c, d, e, f) -->
+  <circle cx="180" cy="70" r="10" fill="red" clip-path="url(#clip1)"/>
+  <circle cx="250" cy="70" r="10" fill="red" mask="url(#mask1)"/>
+  <image x="260" y="60" width="20" height="20" xlink:href="a.png"/>
+  <!-- 支持 png jpg svg -->
+  
+  <!-- <foreignObject> 作为其他样式属性载体，在svg html MathML  如width  同时应受支持  -->
+  <g filter="url(#filter1)">
+    <polyline points="260 80, 280 80, 280 100, 260 100, 260 80" fill="none" stroke="red" stroke-width="2"/>
+    <circle r="7" cx="270" cy="90" fill="red"/>
+  </g>
+  <!-- https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Filter_effects -->
+</svg>
+
+
+
