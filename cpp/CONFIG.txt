@@ -1,0 +1,13 @@
+patch: src/test
+version 1.2.514
+on shared static
+
+patch src/main
+link test-shared
+name maina
+link test-static
+
+patch: tests
+name mem
+sources mem.cpp
+

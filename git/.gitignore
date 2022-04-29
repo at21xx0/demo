@@ -1,0 +1,6 @@
+# CMake:
+build
+# vim:
+.*.swp
+# my file:
+a.txt

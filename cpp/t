@@ -1,0 +1,20 @@
+#!/usr/bin/bash
+
+function e()
+{
+	if [ $? != 0 ]
+	then
+		exit 1
+	fi
+}
+mkdir -p build
+cd build
+cmake .. -DCMAKE_INSTALL_PREFIX=$PWD/prefix -G"Ninja"
+e
+cmake --build . --parallel
+e
+
+# cmake --build . --target install
+./bin/main
+e
+
