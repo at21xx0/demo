@@ -72,7 +72,7 @@ include(CMakePackageConfigHelpers)
 
 function(add_target)
 	set(_options)
-	set(_oneValueArgs name version epport_name sources_dir labels install_includedir ban patch)
+	set(_oneValueArgs name version epport_name sources_dir labels includedir ban patch)
 	set(_multiValueArgs depends sources include options link properties files install definitions ignore public_header hidden arg on off)
 
 	set(_target_default_on auto_sources auto_sources_dir independent auto_include auto_definitions rpath auto_version export_hidden_static sources_rel_patch)
@@ -89,6 +89,9 @@ function(add_target)
 		return()
 	endif()
 	# message(STATUS "options: ${options}")
+	if(NOT DEFINED _target_includedir)
+		set(_target_includedir ${target_includedir})
+	endif()
 	if(NOT _target_name)
 		if(_target_patch)
 			string(REGEX REPLACE "[/\\]$" "" _target_patch "${_target_patch}")
@@ -292,8 +295,8 @@ function(add_target)
 		if(_target_install_export)
 			install(
 				FILES
-					${CMAKE_BINARY_DIR}/${target_include}/${_target_export_name}Export.h
-				DESTINATION ${target_include_dir}
+					${CMAKE_BINARY_DIR}/${target_includedir}/${_target_export_name}Export.h
+				DESTINATION ${_target_includedir}
 				COMPONENT dev
 			)
 		endif()
@@ -375,7 +378,7 @@ function(add_target)
 				DESTINATION ${target_bindir}
 				COMPONENT bin
 			PUBLIC_HEADER
-				DESTINATION ${target_includedir}
+				DESTINATION ${_target_includedir}
 				COMPONENT dev
 		)
 		set(target_cmake_packages ${target_cmake_packages} ${_target_install_targets} PARENT_SCOPE)
