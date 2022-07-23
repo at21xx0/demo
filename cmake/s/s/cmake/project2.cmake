@@ -285,9 +285,9 @@ function(add_target)
 						${_target_name}-${_t}
 						PROPERTIES
 							POSITION_INDEPENDENT_CODE 1
-								C_VISIBILITY_PRESET hidden
-								CCX_VISIBILITY_PRESET hidden
-								VISIBILITY_INLINES_HIDEN 1
+							C_VISIBILITY_PRESET hidden
+							CCX_VISIBILITY_PRESET hidden
+							VISIBILITY_INLINES_HIDEN 1
 					)
 				endif()
 			endif()

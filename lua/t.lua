@@ -122,11 +122,234 @@ print(string.format("%d",5))
 print(string.char(97,98,99,100))
 print(string.byte("ABCD",4))
 print(string.byte("ABCD"))
+-- string.char(53)
 print(string.len(str))
 print(string.rep(str,4))
 print(str .. "1")
+print(tostring(1))
+
+arr1 = {"xl", "en", "dk"}
+for i = 1,3 do
+	print(arr1[i])
+end
+arr2 = {}
+arr2[1] = {4, 6}
+arr2[2] = {3, 5}
+print(arr2[1][1])
+for k, v in pairs(arr1) do
+	print(k, v)
+end
+function Iter(arr)
+	local i = 0
+	local n = #arr
+	return function()
+		i = i + 1
+		if i <= n
+			then
+				return arr[i]
+			end
+		end
+	end
+for e in Iter(arr1) do
+	print(e)
+end
+arr2 = nil
 
 
+-- table
+t1 = {}
+t1["zn"] = "xl"
+t1["gt"] = "dk"
+print(type(t1))
+print(t1["gt"])
+t2 = t1
+t2["gt"] = "zi"
+print(t1["gt"] .. " " .. t2["gt"])
+t1 = nil
+function pArr(a)
+	print(table.concat(a, "|"))
+end
+print(table.concat(arr1))
+print(table.concat(arr1, "|"))
+print(table.concat(arr1, "|", 2, 3))
+table.insert(arr1, "zi")
+table.insert(arr1, 2, "p0")
+pArr(arr1)
+table.sort(arr1)
+table.remove(arr1)
+pArr(arr1)
+
+function tableToString(t)
+	s = ""
+	for k, v in pairs(t) do
+		s = s .. k .. " = " .. v .. "; "
+	end
+	return s
+end
+function pTab(t)
+	print(tableToString(t))
+end
+
+
+-- require("module1")
+local m = require("module1")
+m.f1()
+m.f2()
+print(m.gb)
+
+-- export LUA_PATH="~/lua/?.lua;;"
+-- ;; 表示默认LUA_PATH
+print(os.getenv("PWD"))
+m.loc1.test()
+
+t2 = {}
+-- t3 = {}
+t2.zi = "ul"
+t2.ml = "en"
+pTab(t2)
+t1 = setmetatable(t2, {__index = {lg = "sg"}})
+pTab(t1)
+print(t1.lg)
+t1 = setmetatable(t2, {
+	__index = function(t, k)
+		if k == "lg" then
+			return "sg"
+		else
+			return nil
+		end
+	end
+	, __newindex = function(t, k, v) -- t3
+		rawset(t, k, "[".. v .. "]")
+	end
+	,  __add = function(t, n)
+		print("__add(" .. tableToString(t) .. ", " .. tableToString(n) .. ")")
+		return nil
+	end
+	-- __add + __sub - __mul * __div / __mod % __unm - __concat .. __lt < __le > __eq ==
+	, __call = function(t, n)
+		print("__call(" .. tableToString(t) .. ", " .. tableToString(n) .. "]")
+		return nil
+	end
+	, __tostring = function(t)
+		return tableToString(t)
+	end
+})
+print(t1.lg) -- __index
+t1.lt = "le" -- __newindex
+pArr(t1)
+print(t1 + t2) -- __add
+print(t1(t2)) -- __call
+print(t1) -- __tostring
+
+-- coroutinue
+c1 = coroutine.create(
+	function(t)
+		print(t)
+	end
+)
+coroutine.resume(c1, 1)
+print(coroutine.status(c1))
+print("\n\n")
+c1 = coroutine.wrap(function(i) print(i) end)
+c1(1)
+c2 = coroutine.create(
+	function()
+		for i = 1, 10 do
+			print(i)
+			if i == 3 then
+				print(coroutine.status())
+				print(coroutine.running())
+			end
+			print(i)
+			coroutine.yield()
+		end
+	end
+)
+coroutine.resume(c2)
+print(coroutine.status(c2))
+coroutine.resume(c2)
+coroutine.resume(c2)
+print(coroutine.status(c2))
+print(coroutine.running())
+function fadd1(i)
+	return coroutine.yield(i + 1)
+end
+c1 = coroutine.create(
+function(t)
+	print(t)
+	t = fadd1(t)
+	print(t)
+	t = fadd1(t)
+	print(t)
+	t = coroutine.yield(t + 1)
+	print(t)
+end)
+status, v = coroutine.resume(c1, 1)
+status, v = coroutine.resume(c1, v)
+status, v = coroutine.resume(c1, v)
+print(coroutine.resume(c1, v))
+
+f1 = io.open("a.txt", "w+") -- r w a r+ w+ a+ + b
+io.output(f1)
+io.write("xxxx \n5 abcdef\nzi_mul")
+io.close(f1)
+f1 = io.open("a.txt", "r")
+io.input(f1)
+print(io.read()) -- "*i"
+print(io.read("*n")) -- "*n"
+print(io.read(5)) -- 5
+print(io.type(f1))
+-- io.flush()
+io.close(f1)
+-- f2 = io.tmpfile()
+f2 = io.open("a.txt", "r")
+print(f2:read())
+f2:seek("set", 0)
+print(f2:read())
+f2:seek("cur", 2) 
+print(f2:read())
+-- f2:seek("end", -6)
+-- print(f2:read())
+f2:flush()
+f2:close()
+for l in io.lines("a.txt") do
+	print(l)
+end
+
+assert(type(arr1) == "table", "arr1")
+-- level = 1 -- default 0, 1, 2
+-- error("mesage", level)
+if pcall(function(i) print(i) error("err") return 1 end, 1) then
+else
+	print("error")
+end
+function errF()
+	e = e + 1
+end
+function errorHander(e)
+	print("err: " .. e)
+end
+status = xpcall(errF, errorHander)
+print(status)
+
+C = {v = 0}
+function C:new(o, v)
+	o = o or {}
+	setmetatable(o, self)
+	self.__index = self
+	v = v or 0
+	self.v = v
+	return o
+end
+function C:getV()
+	return self.v
+end
+c1 = C:new(nil, 5)
+print(c1.v)
+print(c1:getV())
+
+loadfile("hello.lua")()
+-- loadstring("print(5)")()
 
 
 

@@ -3,6 +3,10 @@
 
 #include "m.h"
 
+
+int main2(void)
+{
+	void *handle;
 #define test(symbol) \
 	s = dlsym(handle, #symbol); \
 	if(s) \
@@ -13,10 +17,6 @@
 	{ \
 		printf("%s\n", dlerror()); \
 	} 
-
-int main2(void)
-{
-	void *handle;
 	int (*s)(int);
 	handle	= dlopen("../lib/libs2.so.1", RTLD_NOW);
 	if(!handle)
@@ -29,4 +29,5 @@ int main2(void)
 	test(s2k);
 	dlclose(handle);
 	return 0;
+#undef test
 }
