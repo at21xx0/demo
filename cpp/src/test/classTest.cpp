@@ -68,6 +68,16 @@ namespace ClassTest // 使用namespace防止重复，冲突
 			{
 				this->n = a.n;
 			}
+			Number& operator=(const Number& a)
+			{
+				// 拷贝赋值运算符 // 解决 deprecated copy
+				Number *b;
+				if(this==&a)
+					return *this;//证同测试
+				b = new Number(a.n);
+				return *b;
+				
+			}
 
 			~Number()
 			{
@@ -395,4 +405,6 @@ void classTest()
 	classTest3();
 	classTest4();
 }
+
+
 
