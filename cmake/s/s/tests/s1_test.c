@@ -7,6 +7,7 @@
 int main(int argc, char **argv)
 {
 	int i, j;
+	(void)argc;
 	assert(argc == 3);
 	sscanf(argv[1], "%d", &i);
 	sscanf(argv[2], "%d", &j);
