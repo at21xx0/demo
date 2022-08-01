@@ -514,7 +514,7 @@ void func_7(){
 	const int e=1;
 	switch(i){
 		case 0: c=i*5;break;
-		case e: c*=100;break;/* 常亮可以用作case 的值*/
+		// case e: c*=100;break;/* 常量可以用作case 的值*/
 		case 2: c=2;break;
 		case 3: i=4,printf("未break;\n");/* 有时不用break会出bug;*/ /* 比如用switch(i) 给i赋值时*/
 		case 4: i=5,printf("switch仍然在运行\n");break;
@@ -1142,7 +1142,7 @@ void func_20(){
 //#pragma 特殊命令到编译器中
 	printf("Date: %s\nTime: %s\nFile: %s\nLine: %d\nSTDC: %d\n",__DATE__,__TIME__,__FILE__,__LINE__,__STDC__);
 	/* 当前日期、时间 当前文件名 行号 (以ANSI为标准时，定义为1)*/
-#define func_dl(a, b) \ /* 延续到下一行 */
+#define func_dl(a, b) /* 延续到下一行 */ \
 	printf(#a " and " #b) /* # 字符串常量化 */
 #define tokenpaster(n) \
 	printf ("token" #n " = %d", token##n) /* 粘贴运算符 ## */
