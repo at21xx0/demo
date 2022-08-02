@@ -394,7 +394,7 @@ void classTest4()
 }
 void classTest()
 {
-	cout << new char[] {'y', 'y', 'y' , '\0'} << endl;
+	//cout << new char[] {'y', 'y', 'y' , '\0'} << endl;
 	classTest1(); // 自动释放 
 	BaseClass *b = new BaseClass(); // 自己 new 的要自己释放
 	cout << "getId: " << b->getId() << endl;
