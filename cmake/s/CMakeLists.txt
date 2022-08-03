@@ -64,7 +64,7 @@ else()
 		set(DEF_s_DIR ${STAGED_INSTALL_PREFIX}/share/cmake/s)
 	endif()
 	file(TO_NATIVE_PATH "${DEF_s_DIR}" DEF_s_DIR)
-	set(s_s_DIR ${DEF_s_DIR} FORCE)
+	file(TO_CMAKE_PATH "${DEF_s_DIR}" s_s_DIR)
 		# CACHE PATH "Path to internally built messageConfig.cmake" FORCE)
 endif()
 
