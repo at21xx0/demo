@@ -29,6 +29,8 @@ namespace cppTest
 			std::string getMessage() const;
 			friend std::ostream& operator<<(std::ostream&, const Message&);
 	};
+
+	std::ostream& operator<<(std::ostream&, const Message&);
 };
 
 #endif

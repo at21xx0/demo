@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <locale>
 #include <codecvt>
 
 #include "test.h"
@@ -36,7 +37,7 @@ void stringC()
 void utfTest()
 {
 	//汉字：你好啊
-	const char* szgbk = "你好啊";//Clion on mac 把这个直接转换成u8编码了, 在windowss vs上应该是GBK编码，取决于编译器和编辑器编码的设置
+	const char* szgbk = u8"你好啊";
 	char u8[] = u8"\u4f60\u597d\u554a";
 	char16_t u16[] = u"\u4f60\u597d\u554a";
 	char32_t u32[] = U"\u4f60\u597d\u554a";
@@ -142,7 +143,7 @@ void stringTest(void)
 	C2(s1.append("Cstring..."));
 	C2(s1.append(10u, '?'));// 10 个?
 	C2(s1.append(s1.begin() + 8, s1.end()));
-	C2(s1.append<int>(5, 65)); // 5个A
+	C2(s1.append(5, (char)65)); // 5个A
 	C2(s1 += s2);
 	s3 = "[STR]";
 	C2(s1.replace(pos + 1, len, s3)); // 从第 pos + 1 开始共替换len个字符为 s3
@@ -160,7 +161,7 @@ void stringTest(void)
 	C2(s1.assign("Cstr", 3));
 	C2(s1.assign("Cstr"));
 	C2(s1.assign(25, '*'));
-	C2(s1.assign<int>(10, 0x2D));
+	C2(s1.assign(10, (char)0x2D));
 	C2(s1.assign(s2.begin(), s2.end()));
 	s1.assign(s2);
 	s1.append(s3);

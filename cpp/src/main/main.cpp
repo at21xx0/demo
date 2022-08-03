@@ -26,8 +26,8 @@ int main(int argc, char **argv)
 	(void)argc;
 	(void)argv;
 	cout << "test" << endl;
-	delete i;
 	cout << *i << endl;
+	delete i;
 	cout << n << endl;
 	nT(int);
 	nT(signed int);
