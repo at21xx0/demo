@@ -1,0 +1,9 @@
+patch src/sort
+on static
+
+patch tests
+name sort-test
+sources sort_test.c
+link sort-static
+
+

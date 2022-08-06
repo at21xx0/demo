@@ -3,3 +3,21 @@
 *.swo
 *~
 
+# C
+*.o
+*.a
+*.so
+*.obj
+*.lib
+*.dll
+*.exe
+#
+# cmake
+build
+# Java
+# *.class
+# other
+.*
+!.gitignore
+
+
