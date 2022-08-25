@@ -8,8 +8,12 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED True)
 set(CMAKE_C_FLAGS "-W -Wall -Werror -O2 -fPIC")
 
+option(OPT_EXTRA_S2 "message_OPT_EXTRA_S2" ON)
+
+
 set(target_cmake_package ON)
-include(${PROJECT_SOURCE_DIR}/cmake/project2.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/project2.cmake)
+
 
 add_target(
 	name stest
