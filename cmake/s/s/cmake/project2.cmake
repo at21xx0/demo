@@ -117,7 +117,7 @@ function(add_target)
 		string(REGEX REPLACE "([01\\)])([01\\(])" "\\1&\\2" _s "${_s}") # ([01\)](?=[01\(])) $1&
 		string(REGEX REPLACE "([01\\)])([01\\(])" "\\1&\\2" _s "${_s}")
 		math(EXPR _status "${_s}")
-		message(STATUS "${_target_name}_expr: ${_s} ${_status}")
+		# message(STATUS "${_target_name}_expr: ${_s} ${_status}")
 		if(_status EQUAL 0)
 			return()
 		else()
