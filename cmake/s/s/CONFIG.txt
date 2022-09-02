@@ -1,21 +1,17 @@
 name: s1
 sources: src/s1/s1.c
 on static
+
 patch src/s2e
 on object
 
-name s2-unix
-on static
-conditions ${UNIX} $<BOOL:${OPT_EXTRA_S2}>
-# conditions ON or OFF or OFF ON not OFF # (1|0|0)&1&(1^0)
-
+patch src/s2
 name s2-win32
-on static
+export static
+export_name s2
+link s2e-object
 conditions_var WIN32 not CYGWIN OPT_EXTRA_S2 # stable
 definitions s2_WIN32 
-
-name s2-release
-on shared static
-conditions_var $<CONFIG:Release>
+# conditions ON or OFF or OFF ON not OFF # (1|0|0)&1&(1^0)
 
 
