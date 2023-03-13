@@ -1,0 +1,12 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+includedir=${prefix}/%target_includedir%
+libdir=${exec_prefix}/%target_libdir%
+ 
+Name: %_target_name%
+Description: %_target_description% # %_target_name% pc file
+URL: %_target_url%
+Version: @_target_version@
+Cflags: -I${includedir}
+Libs: -L${libdir} -l%target_name%
+

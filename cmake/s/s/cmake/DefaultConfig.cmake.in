@@ -5,7 +5,29 @@ include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
 check_required_components(@target_packages_@)
 
 # dependency
-@target_packages_deps_@
+# set(dep_pc "%target_dep_pc%")
+# set(dep_cmake_package "%target_dep_cmake_package%")
+
+macro(dep_conv str name version deps)
+	string(REGEX MATCH "^[^:]+" ${name} "${str}")
+	string(REGEX MATCH "|version:[^|]+" _tmp1 "${str}")
+	string(REGEX MATCH "[^|]+" ${version} "${_tmp1}")
+	string(REGEX MATCH "|deps:[^|]+" _tmp1 "${str}")
+	string(REGEX MATCH "[^|]+" ${version} "${_tmp1}")
+endmacro()
+
+if(dep_pc)
+	find_package(PkgConfig REQUIRED QUIET)
+	pkg_search_module(UUID REQUIRED IMPORTED_TARGET uuid)
+	if(TARGET PkgConfig::UUID)
+	endif()
+endif()
+if(dep_cmake_package)
+	foreach(_t IN LISTS dep_cmake_package)
+	find_package(${_t} REQUIRED)
+	endforeach()
+endif()
+
 
 
 
