@@ -12,6 +12,6 @@ export_name s2
 link s2e-object
 conditions_var WIN32 not CYGWIN OPT_EXTRA_S2 # stable
 definitions s2_WIN32 
-# conditions ON or OFF or OFF ON not OFF # (1|0|0)&1&(1^0)
+conditions ON or OFF or OFF ON not OFF # (1|0|0)&1&(1^0)
 
 
