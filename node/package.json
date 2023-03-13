@@ -1,0 +1,44 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "demo",
+  "main": "hello.js",
+  "scripts": {
+    "test": "node hello.js",
+    "main": "node main.js",
+    "js": "node javascript.js",
+    "express": "node express.js",
+    "file": "node file.js",
+    "render": "node render.js",
+    "napi": "node test.js",
+    "napi-cmake-js": "cmake-js",
+    "napi-node-gyp": "node-gyp configure && node-gyp build",
+    "nms": "node nms.js",
+    "websocket": "node websocket.js",
+    "sqlite3": "node sqlite3.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/*/demo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "cmake-js": "^7.1.1",
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "handlebars": "^4.7.7",
+    "hbs": "^4.2.0",
+    "multer": "^1.4.5-lts.1",
+    "node-gyp": "^9.3.1",
+    "node-media-server": "^2.4.9",
+    "nodejs-websocket": "^1.7.2",
+    "sqlite3": "^5.1.4"
+  },
+  "bugs": {
+    "url": "https://github.com/*/demo/issues"
+  },
+  "homepage": "https://github.com/*/demo#readme"
+}

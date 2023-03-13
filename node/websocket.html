@@ -1,0 +1,108 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<title>Websocket_test</title>
+		<style type="text/css">
+.B1, .T1{width:100%;height:32px;position:relative;background-color:#D7D7D7;border:1px solid black;font-size:80%;outline:none}
+.T2{background-color: white;}
+
+		</style>
+	</head>
+	<body>
+		<div id="log"></div>
+		<input type="file" onchange="javascript: websocket_main2(websocket_port, this.files[0]);"/>
+		<script type="text/javascript">
+			window.websocket_port = '80';
+			var errF = function(err) {
+				console.log(err);
+			}
+			function log(v) {
+				let e=document.createElement("div");
+				e.innerHTML = v;
+				document.getElementById("log").appendChild(e);
+			}
+			function websocket_main(port) {
+				websocket_port = port;
+				let n = 0;
+				let ws;
+				ws = new WebSocket(`ws://${location.hostname}:${websocket_port}/4`);
+				ws.onclose = function(e) {
+					log('close');
+				}
+				// ws.binaryType = new
+				ws.onmessage = function(e) {
+					n++;
+					if(n !== 7) {
+						if(typeof e.data === 'string') {
+							log('text: ' + e.data);
+							ws.send(e.data);
+						}
+					} else {
+						ws.close();
+					}
+				}
+				ws.onopen = function() {
+					ws.send(Date.now().toString());
+				}
+				ws.onerror = errF;
+				
+			}
+			function websocket_main2(port, file = null) {
+				ws = new WebSocket(`ws://${location.hostname}:${websocket_port}/3`);
+				ws.onopen = function() {
+					if(file)
+						ws.send(file);
+					else
+						ws.send('[str]');
+				}
+				ws.onmessage = function(e) {
+					if(typeof e.data === 'string') {
+						log('file_length: ' + e.data);
+						ws.send(e.data);
+					}else if(e.data instanceof ArrayBuffer) {
+						console.log('arraybuffer');
+						ws.close();
+					}else if(e.data instanceof Blob) {
+						let reader = new FileReader();
+						reader.onload = function(e){
+							log('blob: ' + e.target.result);
+							ws.close();
+						}
+						reader.readAsText(e.data);
+						// ws.send(blob);
+					}
+					else console.log(e.data);
+				}
+			}
+			if(window.fetch) {
+				// mode *cors no-cors same-origin // credentials: *same-origin include omit // cache *default  no-cache reload force-cache only-if-cached // headers {'Content-Type': 'text/plain'} // redirect follow // body
+				fetch('/websocket_port', {method: 'GET', mode: 'cors', cache: 'no-cache'})
+					.then((response) => {
+							if(!response.ok)throw new Error('!response.ok'); // response.status
+							return response.text(); //json blob arrayBufferj
+						}, errF)
+					.then(function(data){
+						websocket_main(data);
+					}, errF);
+			} else {
+				let e = document.createElement("script");
+				e.setAttribute('type', 'text/javascript');
+				e.setAttribute('src', '/websocket_port_jsonp?callback=websocket_main');
+				document.body.appendChild(e);
+			}
+			function Dfile(a,b) {
+				let c = document.createElement("a");
+				c.setAttribute("href","data:text/plain;charset=utf-8," + encodeURIComponent(b));
+				c.setAttribute("download",a);
+				c.style.display="none";
+				document.body.appendChild(c);
+				c.click();
+				document.body.removeChild(c);
+			}
+		</script>
+
+	</body>
+</html>
+

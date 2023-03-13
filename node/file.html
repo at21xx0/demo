@@ -1,0 +1,61 @@
+<!--JS_MARK_head-->
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<title><!--JS_VAR_title--></title>
+		<style type="text/css">
+body{margin: 0; padding: 0;}
+.hide{display:none;}
+.show{display:block;}
+.l_blue{background-color: #87CEFA;}
+.l_white{background-color: white;}
+.d_center1{ position: relative; top: 0; left: 0; right: 0; bottom: 0; width: fit-content; width: -moz-fit-content; font-size: 120%; margin: 0 auto; }
+input.i_files[type=file]{ opacity: 0; position: absolute; left: 0; }
+		</style>
+	</head>
+	<body>
+		<!--JS_MARK_menu-->
+		<form action="/api/v7/user" target="message" enctype="application/x-www-form-urlencoded" method="post">
+			<span>username:</span><input type="text" id="username" name="user" value="admin" />
+			<span>password:</span><input type="password" id="password" name="pass" />
+			<br />
+			<input type="radio" id="action_login" name="action" value="login" checked /><label for="action_login">login/register</label>
+			<input type="radio" id="action_logout" name="action" value="logout" /><label for="action_logout">logout</label>
+			<input type="radio" id="action_close" name="action" value="close" /><label for="action_close">close</label>
+			<input type="submit" value="submit" />
+		</form>
+		<iframe name="message" id="message"></iframe>
+		<table><tr><td><a href="javascript: location.reload();">refresh</a></td><td><a id="copy" href="javascript: fileAction('copy');">copy</a></td><td><a href="javascript: fileAction('delete');">delete</a></td><td><a href="javascript: fileAction('mkdir');">mkdir</a></td><td><a href="javascript: fileAction('move');">move</a></td><td><a href="javascript: fileAction('rename');">rename</a></td><td><a href="javascript: fileAction('upload');">upload</a></td></tr></table>
+		<div id="upload_div" class="hide">
+			<div id="upload_div_1" style="border: 5px dashed;">
+				<div class="d_center1">Drag files here.</div>
+				<div class="d_center1"><span style="color: blue; text-decoration: underline;">Choose files</span><input multiple="multiple" type="file" class="i_files" id="upload_input_1" /></div>
+			</div>
+			<div><input type="button" onclick="javascript: document.getElementById('upload_div').className = 'hide';" value="hide" /><input type="button" id="upload_button_1" value="upload" onclick="javascript: sendF();"><input type="range" id="upload_range" value="0" /><span id="upload_message"></span></div>
+			<div style="white-space: pre-line;" id="upload_files"></div>
+		</div>
+		<div id="choose_div" class="hide">
+			<table><tr><td><span id="choose_hint"></span><input type="text" id="choose_path" onkeydown="javascript: if(event.keyCode === 13)chooseAction('cpath', this.value);" /></td><td><a href="javascript: chooseAction('ok');">ok</a></td><td><a href="javascript: chooseAction('cancel');">cancel</a></td></tr></table>
+			<div id="choose_values" onclick="chooseAction('click');"></div>
+		</div>
+		<script type="text/javascript">
+		<!-- https://github.com/appcues/SparkMD5 -->
+<!--JS_VAR_sparkMD5min-->
+		</script>
+		<script type="text/javascript">
+<!--JS_VAR_file_js-->
+		</script>
+		<!--JS_MARK_tableStart-->
+		<table id="files">
+			<tr><td><a href="<!--JS_VAR_updir-->">../</a></td></tr>
+			<!--JS_MARK_list-->
+			<tr><!--JS_VAR_checkbox--><td><a href="<!--JS_VAR_href-->"><!--JS_VAR_fn--></a></td><td><!--JS_VAR_size--></td><td><!--JS_VAR_ctime--></td></tr>
+			<!--JS_MARK_tableEnd-->
+		</table>
+		<!--JS_MARK_end-->
+	</body>
+</html>
+<!--JS_MARK_index--><!--JS_VAR_head--><!--JS_VAR_script--><!--JS_VAR_tableStart--><!--JS_VAR_list--><!--JS_VAR_tableEnd--><!--JS_VAR_end-->
+

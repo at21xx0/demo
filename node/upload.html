@@ -1,0 +1,134 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		<title>Upload</title>
+		<style type="text/css">
+.l_blue{background-color: #87CEFA;}
+.l_white{background-color: white;}
+.d_center1{ position: relative; top: 0; left: 0; right: 0; bottom: 0; width: fit-content; width: -moz-fit-content; font-size: 120%; margin: 0 auto; }
+input.i_files[type=file]{ opacity: 0; position: absolute; left: 0; }
+
+		</style>
+	</head>
+	<body>
+		<div id="upload_div_1" style="border: 5px dashed;">
+			<div class="d_center1">Drag files here.</div>
+			<div class="d_center1"><span style="color: blue; text-decoration: underline;">Choose files</span><input multiple="multiple" type="file" class="i_files" id="upload_input_1" /></div>
+		</div>
+		<div><input type="button" id="upload_button_1" value="upload" onclick="javascript: sendF();"><input type="range" id="upload_range" value="0" /></div>
+		<form action="/api/v7/upload" method="post" enctype="multipart/form-data">
+			<div><input type="file" webkitdirectory name="file" /></div>
+			<div><input type="submit" value="upload" /></div>
+		</form>
+		<div style="white-space: pre-line;" id="show_1"></div>
+		<script type="text/javascript">
+function getUploadFiles(callback) {
+	const d = document.getElementById('upload_div_1');
+	const ei = document.getElementById('upload_input_1');
+	ei.onchange = function(e) {
+		callback(ei.files);
+	}
+	d.ondragover = function(){
+		this.className = 'l_blue';
+		return false;
+	}
+	d.ondragend = function(){
+		this.className = 'l_white';
+		return false;
+	}
+	d.ondrop = function(e){
+		this.className = 'l_white';
+		e.preventDefault();
+		e.stopPropagation();
+		//none copy copyLink copyMove link linkMove move all uninitialized
+		let trans = e.dataTransfer;
+		var files = [];
+		var rCount = 0;
+		var loopF = function(entry) {
+			if (entry.isFile) {
+				rCount++;
+				entry.file((file) => {
+					let path = entry.fullPath;
+					if(path[0] === '/')
+						path = path.slice(1);
+					files.push(new File([file], path, {type:file.type}));
+					rCount--;
+					if(rCount === 0)
+						callback(files);
+				});
+			} else if(entry.isDirectory){
+				let reader = entry.createReader();
+				reader.readEntries((entries) => {
+					entries.forEach((entry) => loopF(entry));
+				}, e => { console.log(e); });
+			}
+		}
+		for(let i = 0; i < trans.items.length;i++) {
+			let item = trans.items[i];
+			if(item.kind === 'string') {
+				item.getAsString(function(s) {
+					console.log(item.type, s);
+				});
+				return;
+			} else if(item.kind === 'file') {
+				loopF(item.webkitGetAsEntry());
+				/*
+				let entry = item.webkitGetAsEntry();
+				if(entry.isFile)
+					files.push(item.getAsFile());
+				*/
+			}
+		}
+		return false;
+	}
+}
+
+const show = document.getElementById('show_1');
+var Files = [];
+getUploadFiles(function(files) {
+	Array.prototype.push.apply(Files, files);
+	let str = '';
+	for(let i = 0;i < Files.length;i++) {
+		str += Files[i].name + '\t' + Files[i].size + '\n';
+	}
+	show.innerHTML = str;
+});
+function sendF() {
+	sendFiles(Files);
+	Files = [];
+}
+function sendFiles(files)
+{
+	console.log('files', files);
+	var formData = new FormData();
+	var rElement = document.getElementById('upload_range');
+	// Blob.prototype.slice
+	formData.append("user", "at21xx0");
+	formData.append("token", "let-cin");
+	for(let i = 0;i != files.length;i++)
+	{
+		formData.append("file", files[i]); // 'userfile'
+		// file.name file.size type
+	}
+	// formData.append('username', 'name');
+	var req = new XMLHttpRequest();
+	req.open("POST", "/api/v7/upload");
+	req.onreadystatechange = function() {
+		if(req.readyState === 4 && req.status === 200)
+			console.log('done.');
+
+	}
+	req.upload.onprogress = function(e) {
+		if(e.lengthComputable) {
+			rElement.value = (e.loaded / e.total * 100);
+		}
+	}
+	req.send(formData);
+}
+		</script>
+
+	</body>
+</html>
+
