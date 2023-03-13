@@ -13,11 +13,14 @@
 *.exe
 #
 # cmake
-build
+**/build
 # Java
 # *.class
+# nodejs
+# **/node_moudles
 # other
 .*
 !.gitignore
+
 
 

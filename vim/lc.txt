@@ -160,6 +160,8 @@ terminal
 :term 启动终端 :ter :terminal
 :vert ter 水平
 Ctrl + w :vert term 在打开一个水平terminal
+Ctrl + \ Ctrl + n 切换模式
+:term whoami
 
 
 补充
@@ -280,6 +282,14 @@ m 设置标注 (mark)
 :.,$/val/v2/g 当前行到行末
 :set fenc=utf-8 指定文件编码格式
 q: 
+
+quickfix:
+:copen
+:set makeprg=make\ -j
+:cn :cnext
+:cp
+:ccloset
+
 
 
 
