@@ -6,6 +6,7 @@ set(target_auto_win_object ON)
 set(target_fix_win_object ON) # all_dllimport -Werror
 set(target_macro ON)
 set(target_check ON)
+set(target_dev ON)
 
 set(target_base_dir "${CMAKE_CURRENT_LIST_DIR}")
 set(target_lib)
@@ -303,7 +304,7 @@ function(add_target)
 				set(CMAKE_REQUIRED_DEFINITIONS "")
 				foreach(_v IN LISTS _t)
 					if(_v MATCHES "^-[iILl]")
-						list(REMOVE_ITEM _t ${_V})
+						list(REMOVE_ITEM _t ${_v})
 						list(APPEND CMAKE_REQUIRED_INCLUDES ${_v})
 					endif()
 				endforeach()
@@ -504,7 +505,7 @@ function(add_target)
 					file(COPY_FILE "${target_base_dir}/CMakeExternal.cmake" "${_source}/CMakeLists.txt")
 				endif()
 				set(_carg "-DCMAKE_INSTALL_PREFIX=\"${_install_prefix}\"")
-				foreach(_n IN ITEMS CMAKE_C_COMPILER CMAKE_CXX_COMPILER CMAKE_BUILD_TYPE CMAKE_TOOLCHAIN_FILE CMAKE_GENERATOR)
+				foreach(_n IN ITEMS CMAKE_TOOLCHAIN_FILE CMAKE_PREFIX_PATH CMAKE_C_COMPILER CMAKE_CXX_COMPILER CMAKE_BUILD_TYPE CMAKE_GENERATOR)
 					if(${_n})
 						list(APPEND _carg "-D${_n}=\"${${_n}}\"")
 					endif()
@@ -852,6 +853,20 @@ function(add_target)
 							VISIBILITY_INLINES_HIDEN 1
 					)
 				endif()
+				if(target_dev)
+					if(NOT _target_description)
+						set(_target_description "${_target_name}")
+					endif()
+					configure_file(${target_base_dir}/pkg.pc.in ${CMAKE_BINARY_DIR}/${_target_export_name}.pc @ONLY)
+					if(NOT EXISTS ${CMAKE_BINARY_DIR}/${_target_export_name}.pc)
+						message(FATAL_ERROR "err")
+					endif()
+					install(
+						FILES
+							${CMAKE_BINARY_DIR}/${_target_export_name}.pc
+						DESTINATION ${target_libdir}/pkgconfig
+					)
+				endif()
 			endif()
 		endforeach()
 		if(_target_install_export)
@@ -934,6 +949,7 @@ function(add_target)
 		target_link_all()
 	endif()
 	if(_target_install_targets)
+		# dev
 		install(
 			TARGETS
 				${_target_install_targets}
@@ -1076,7 +1092,7 @@ endmacro()
 macro(target_final)
 	target_config_file()
 	target_link_all()
-	if(target_cmake_package)
+	if(target_cmake_package AND target_dev)
 		if(target_cmakedir)
 			set(_cmakedir ${target_cmakedir})
 		elseif(WIN32 AND NOT CYGWIN)
@@ -1084,6 +1100,7 @@ macro(target_final)
 		else()
 			set(_cmakedir share/cmake/${PROJECT_NAME})
 		endif()
+		# set(_cmakedir "${target_libdir}/cmake")
 		install(
 			EXPORT
 				${PROJECT_NAME}Targets
