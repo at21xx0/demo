@@ -1,0 +1,10 @@
+*.pem
+*.crt
+*.key
+*.der
+*.p12
+*.csr
+!rsa_private.key
+!cert.pem
+!ca.pem
+!test.sh
