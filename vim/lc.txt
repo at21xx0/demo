@@ -291,6 +291,11 @@ quickfix:
 :ccloset
 
 
+"+y
+"+p
+
+"ay
+"by
 
 
 

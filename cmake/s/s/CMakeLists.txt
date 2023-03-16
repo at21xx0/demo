@@ -6,7 +6,6 @@ project(
 )
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED True)
-# set(CMAKE_C_FLAGS "-W -Wall -Werror -O2 -fPIC")
 
 option(OPT_EXTRA_S2 "message_OPT_EXTRA_S2" ON)
 

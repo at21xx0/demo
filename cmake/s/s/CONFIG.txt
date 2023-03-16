@@ -1,3 +1,14 @@
+name check_default_flags
+check -W -Wall -O2 -fPIC
+condition not ${CMAKE_BUILD_TYPE} equal Debug
+append CMAKE_C_FLAGS # CMAKE_CXX_FLAGS
+
+name check_debug_flags
+check -W -Wall -O0 -g -fPIC
+condition ${CMAKE_BUILD_TYPE} equal Debug
+
+
+
 name: s1
 sources: src/s1/s1.c
 on static
@@ -7,11 +18,11 @@ on object
 
 patch src/s2
 name s2-win32
-export static
+install static
+on export
 export_name s2
 link s2e-object
-conditions_var WIN32 not CYGWIN OPT_EXTRA_S2 # stable
+condition ${WIN32} and not ${CYGWIN} and ${OPT_EXTRA_S2} 
 definitions s2_WIN32 
-conditions ON or OFF or OFF ON not OFF # (1|0|0)&1&(1^0)
 
 
