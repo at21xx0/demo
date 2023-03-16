@@ -1,0 +1,17 @@
+name check1
+check -W -Wall -Werror -O2 -fPIC
+condition ${CMAKE_BUILD_TYPE} equal Debug
+check_append CMAKE_CXX_FLAGS CMAKE_C_FLAGS 
+
+name check2
+check -W -Wall -O2 -fPIC
+condition not ${CMAKE_BUILD_TYPE} equal Debug
+check_append CMAKE_CXX_FLAGS CMAKE_C_FLAGS 
+
+name invalid_name
+cmake SDL2 SDL2_image SDL2_ttf SDL2_mixer
+set lib_list1="SDL2::SDL2main;SDL2::SDL2;SDL2_image::SDL2_image;SDL2_ttf::SDL2_ttf;SDL2_mixer::SDL2_mixer"
+
+patch src/main
+link ${lib_list1}
+
