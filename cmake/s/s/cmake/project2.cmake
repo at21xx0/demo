@@ -885,7 +885,7 @@ function(add_target)
 					NO_DEPRECATED_MACRO_NAME "${_target_export_name}_NO_DEPRECATED"
 					DEFINE_NO_DEPRECATED
 				)
-				endif()
+			endif()
 			if(target_hidden_${_t} OR _target_export_hidden_${_t})
 				set_target_properties(
 					${_target_name}-${_t}
@@ -909,7 +909,7 @@ function(add_target)
 						${CMAKE_BINARY_DIR}/${_target_export_name}.pc
 					DESTINATION ${target_libdir}/pkgconfig
 				)
-		endif()
+			endif()
 		endforeach()
 		if(_target_install_export)
 			install(
