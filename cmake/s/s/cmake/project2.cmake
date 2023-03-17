@@ -885,31 +885,31 @@ function(add_target)
 					NO_DEPRECATED_MACRO_NAME "${_target_export_name}_NO_DEPRECATED"
 					DEFINE_NO_DEPRECATED
 				)
-				if(target_hidden_${_t} OR _target_export_hidden_${_t})
-					set_target_properties(
-						${_target_name}-${_t}
-						PROPERTIES
-							POSITION_INDEPENDENT_CODE 1
-							C_VISIBILITY_PRESET hidden
-							CCX_VISIBILITY_PRESET hidden
-							VISIBILITY_INLINES_HIDEN 1
-					)
 				endif()
-				if(target_dev)
-					if(NOT _target_description)
-						set(_target_description "${_target_name}")
-					endif()
-					configure_file(${target_base_dir}/pkg.pc.in ${CMAKE_BINARY_DIR}/${_target_export_name}.pc @ONLY)
-					if(NOT EXISTS ${CMAKE_BINARY_DIR}/${_target_export_name}.pc)
-						message(FATAL_ERROR "err")
-					endif()
-					install(
-						FILES
-							${CMAKE_BINARY_DIR}/${_target_export_name}.pc
-						DESTINATION ${target_libdir}/pkgconfig
-					)
-				endif()
+			if(target_hidden_${_t} OR _target_export_hidden_${_t})
+				set_target_properties(
+					${_target_name}-${_t}
+					PROPERTIES
+						POSITION_INDEPENDENT_CODE 1
+						C_VISIBILITY_PRESET hidden
+						CCX_VISIBILITY_PRESET hidden
+						VISIBILITY_INLINES_HIDEN 1
+				)
 			endif()
+			if(target_dev AND NOT EXISTS ${CMAKE_BINARY_DIR}/${_target_name})
+				if(NOT _target_description)
+					set(_target_description "${_target_name}")
+				endif()
+				configure_file(${target_base_dir}/pkg.pc.in ${CMAKE_BINARY_DIR}/${_target_export_name}.pc @ONLY)
+				if(NOT EXISTS ${CMAKE_BINARY_DIR}/${_target_export_name}.pc)
+					message(FATAL_ERROR "err")
+				endif()
+				install(
+					FILES
+						${CMAKE_BINARY_DIR}/${_target_export_name}.pc
+					DESTINATION ${target_libdir}/pkgconfig
+				)
+		endif()
 		endforeach()
 		if(_target_install_export)
 			install(
