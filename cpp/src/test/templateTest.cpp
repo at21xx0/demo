@@ -1038,7 +1038,7 @@ using namespace template1;
 	static_assert(std::is_same<decltype(nullptr), std::nullptr_t>::value, "nullptr");
 	static_assert(std::is_same<std::conditional<true, std::true_type, std::false_type>::type, std::true_type>::value, "conditional");
 
-	static_assert(std::is_void<void>::value && std::is_null_pointer<decltype(nullptr)>::value, "void null_pointer"); // void std::nullptr_t
+	// static_assert(std::is_void<void>::value && std::is_null_pointer<decltype(nullptr)>::value, "void null_pointer"); // void std::nullptr_t // C++ 14
 	static_assert(std::is_integral<int>::value, "integral"); // char short int long char8_t char16_t char32_t
 	static_assert(std::is_floating_point<float>::value, "floating_point");
 	static_assert(std::is_array<int[5]>::value, "array");
