@@ -145,6 +145,15 @@ namespace ClassTest // 使用namespace防止重复，冲突
 				this->n += a.getN();
 				return *this;
 			}
+			Number* operator->()
+			{
+				return this;
+			}
+			Number& operator,(int n)
+			{
+				this->n = n;
+				return *this;
+			}
 			Number& operator=(int n)
 			{
 				this->n = n;
@@ -166,6 +175,7 @@ namespace ClassTest // 使用namespace防止重复，冲突
 			}
 			friend ostream& operator<<(ostream&, const Number&);
 			friend istream& operator>>(istream&, Number&);
+			/* operator->  moudleTest.cpp*/
 	};
 	int getN(const Number& a)
 	{
@@ -225,7 +235,7 @@ namespace ClassTest // 使用namespace防止重复，冲突
 		 * 继承方式
 		 * public 公有继承 基类(BaseClass)中 public protected 不变，private 无法访问
 		 * protected 保护继承 public 和 protected 变成 protected
-		 * private 私有继承 public 和 protected 变成 protected
+		 * private 私有继承 public 和 protected 变成 private
 		 */
 		protected:
 			string message;
@@ -319,10 +329,33 @@ namespace ClassTest // 使用namespace防止重复，冲突
 	{
 		free(p);
 	}
+	struct AAA
+	{
+		// public: // default
+		int a;
+		AAA(){}
+		~AAA(){}
+		int get() const
+		{
+			return a;
+		}
+	};
 }
 using namespace ClassTest;
 using ClassTest::BaseClass;
 
+void classTestF1(const Number& n)
+{
+	std::cout << n << '\t';
+}
+void classTestF2(Number& n)
+{
+	std::cout << n << '\t';
+}
+void classTestF3(Number n)
+{
+	std::cout << n << '\t';
+}
 
 void classTest1()
 {
@@ -335,6 +368,10 @@ void classTest2()
 	Number n2 = 3; // 运算符重载
 	Number n3(n2); // 拷贝函数
 	Number i;
+	classTestF1(n1);
+	classTestF2(n1);
+	classTestF3(n1); // 拷贝
+	cout << endl;
 	cout << n1.getN() << endl;
 	n1.add().add(3).add(5);  // + 1 + 3 + 5
 	cout << n1.getN() << endl;
@@ -347,6 +384,7 @@ void classTest2()
 	cout << n1 << endl;
 	n1(5);
 	cout << n1 << endl;
+	// n1[n2] // n1->getN()
 	N2 *n4 = new N2;
 	N2 *n5 = new(n4) N2();
 	(void)n5;
@@ -364,6 +402,9 @@ void classTest2()
 	i = 1;
 	n1 = (i++) + (i++);
 	cout << n1 << endl;
+	n1 = (n1, 1, 1 + 1, 2 + 3);
+	// n1, 1, 2, 3;
+	cout << n1 << endl; // 5
 	cout << endl;
 }
 void classTest3()
@@ -388,10 +429,14 @@ void classTest4()
 	cout << endl << endl;
 	classTest4Cout(&s1);
 	// 虚函数 多态
-	classTest4Cout(&s2);
+	classTest4Cout(&s2); // classTest4Count(dynamic_cast<SimpleClass*>(&s)); // safe
 	classTest4Cout(&s3);
 
 }
+// class A{};
+// class B: virtual public{};
+// class B: virtual public{};
+// class D: public A, public B{} // not confict with
 void classTest()
 {
 	//cout << new char[] {'y', 'y', 'y' , '\0'} << endl;
@@ -404,6 +449,7 @@ void classTest()
 	classTest2();
 	classTest3();
 	classTest4();
+	// cpp11 // module
 }
 
 

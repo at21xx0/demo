@@ -35,7 +35,11 @@ v [-- VISUAL --]
   y 复制
 :! shell 命令  执行shell命令
 :r filename 读文件
-:r !shell命令 
+:r !shell_command
+!!shell_command
+!G sort 命令sort 当前文件名
+
+
 
 
 
@@ -95,8 +99,23 @@ $ vim [file ..] // 打开 多个文件
 :2N 前两个文件
 :ls 显示文件
 :b2 :2b 第二个文件
+:b main.c 切换到 main.c
+:b #  :b#  Ctrl + ^  Ctrl + 6 上一个切换的文件
+Ctrl + o  回到列表较旧位置
+Ctrl + l  回到列表较新位置
+Ctrl + i  回到之前跳转的文件
+:sb2 打开
+:vert sb2 打开
 :e 打开文件
-:open
+:edit :open
+:badd
+:bdelete 2 :bd2 删除 :ls 显示的2文件
+:bd :bw 关闭当前缓冲区(文件)
+:bd 12 :bd a.txt 关闭文件
+:12, 30bd 关闭指定范围的缓冲区
+:bfirst 第一个
+:sbfirst 新窗口中第一个
+
 
 tab
 
@@ -128,9 +147,9 @@ netrw中按t打开新tab
 $ vim -o [file ..] # 水平分割
 $ vim -O [file ..] # 垂直分割
 :split 上下窗口
-:sp 同 :split
+:sp :sv 同 :split
 :vsplit 左右窗口
-:vsp 同 :vsplit
+:vsp :vs 同 :vsplit
 :new 水平编辑新文件
 :vnew 垂直编辑新文件
 :sview
@@ -153,13 +172,13 @@ Ctrl + w L 窗口移动到最右端
 Ctrl + w T 窗口移动到新标签页
 :3 split file 尺寸为3的窗口 
 :3split file 尺寸为3的窗口
-:resize 3 调整高度为3行 Ctrl + w _
-:resize +3 高度增加3行 Ctrl + w +
-:resize -3 高度减少3行 Ctrl + w -
+Ctrl + w 3_   :resize 3  调整高度为3行
+Ctrl + w 3+   :resize +3 高度增加3行
+Ctrl + w 3-   :resize -3 高度减少3行
 Ctrl + w = 窗口大小相等
-:vert resize 3 调整宽度为3 Ctrl + w | 
-:vert resize +3 Ctrl + w >
-:vert resize -1 Ctrl + w <
+Ctrl + w 3|   :vert resize 3 调整宽度为3
+Ctrl + w 3>   :vert resize +3
+Ctrl + w <   :vert resize -1
 Ctrl + w q 退出窗口 :quit
 Ctrl + w c 关闭窗口 :close
 
@@ -258,6 +277,7 @@ l ->
 	"ayy 复制一行
 	"ap 粘贴
 	[a-zA-Z0-9] 皆可替换a
+:register
 ' 跳转到标注的行首
 | 行首/列
 \ 未用
@@ -270,10 +290,14 @@ zb 底端
 zz 中间
 zh scroll left
 zl scrol right
+set foldmethod=indent
+za 折叠
 X 退格
 x 删除(字符)
 C 修改至行末
 c 修改
+cc 修改行
+cw 修改词
 V 可视行模式 (选择多行文本，按y复制，按x剪切，按y粘贴，按=格式化)
 v 可视模式
 B 前一单词
@@ -305,6 +329,9 @@ quickfix:
 :cn :cnext
 :cp
 :ccloset
+
+:vim /main/ * | copen  当前目录下全局搜索main
+:vim /main/ **/*.c | copen 任意目录下搜索main
 
 
 "+y

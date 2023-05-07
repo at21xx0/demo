@@ -230,6 +230,7 @@ void stringTest(void)
 	}
 	cout << endl;
 	utfTest();
+	// #include<sstream> // ostringstream
 
 
 }

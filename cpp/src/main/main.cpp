@@ -29,6 +29,10 @@ int main(int argc, char **argv)
 	cout << *i << endl;
 	delete i;
 	cout << n << endl;
+	i = &n;
+	int*& ip = i;
+	ip = NULL;
+	C2(i == NULL);
 	nT(int);
 	nT(signed int);
 	nT(unsigned int);
@@ -49,19 +53,9 @@ int main(int argc, char **argv)
 	stringTest();
 	classTest();
 	cTest();
-	/*
-	vector<int> a;
-	srand((unsigned)time(0));
-	for(int i = 0;i < 100000;++i)
-	{
-		a.insert(a.end(), rand());
-	}
-	sort(a.begin(), a.end());
-	for(int i = 0;i < 100000;++i)
-	{
-		cout << a.at(i) << endl;
-	}
-	*/
+	cpp11Test();
+	templateTest();
+	STLTest();
 
 	return 0;
 }

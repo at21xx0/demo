@@ -7,8 +7,10 @@
 extern "C"
 {
 #endif
-	int cTest1();
-	int cppTest1();
+int cTest1();
+int cppTest1();
+int c_sum_1(int n, ...);
+extern int c_int;
 #ifdef __cplusplus
 }
 #endif

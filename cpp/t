@@ -9,7 +9,8 @@ function e()
 }
 mkdir -p build
 cd build
-cmake .. -DCMAKE_INSTALL_PREFIX=$PWD/prefix -G"Ninja"
+cmake .. -DCMAKE_INSTALL_PREFIX=$PWD/prefix -DCMAKE_BUILD_TYPE=Debug -G"Ninja"
+# -DCMAKE_CXX_COMPILER_LAUNCHER=ccache 
 e
 cmake --build . --parallel
 e

@@ -1,13 +1,32 @@
+name check1
+check -W -Wall -Werror -O2 -fPIC -fsanitize=address -fno-omit-frame-pointer /fsanitize=address
+condition ${CMAKE_BUILD_TYPE} equal Debug
+check_append CMAKE_CXX_FLAGS CMAKE_C_FLAGS 
+
+name check2
+check -W -Wall -O2 -fPIC
+condition not ${CMAKE_BUILD_TYPE} equal Debug
+check_append CMAKE_CXX_FLAGS CMAKE_C_FLAGS 
+
+name pth
+check -W
+condition ${UNIX} and not ${WIN32}
+set lpthread=pthread
+
+
+
 patch: src/test
+link ${lpthread}
 version 1.2.514
-on shared static
+on static
 
 patch src/main
-link test-shared
-name maina
 link test-static
+# name maina
+# link test-static
 
 patch: tests
 name mem
 sources mem.cpp
+
 

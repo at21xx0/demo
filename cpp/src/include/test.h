@@ -6,6 +6,9 @@
 void classTest(void);
 void stringTest(void);
 void cTest(void);
+void cpp11Test(void);
+void templateTest(void);
+void STLTest(void);
 
 
 #endif

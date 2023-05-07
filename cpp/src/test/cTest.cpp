@@ -9,7 +9,11 @@ using cppTest::Message;
 void cTest()
 {
 	int i = cTest1();
+	// extern int c_int;
 	cout << "cTest1: " << i << endl;
+	i = c_int; // cTest.h
+	i = c_sum_1(3, 1, 2, 3);
+	cout << "1+2+3: " << i << endl;
 }
 int cppTest1()
 {
