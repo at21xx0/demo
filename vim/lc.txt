@@ -191,7 +191,7 @@ q + [a-zA-Z0-9] 录制宏 再次按q结束
 
 terminal
 
-:term 启动终端 :ter :terminal
+:term 启动终端 :ter :terminal ::term
 :vert ter 水平
 Ctrl + w :vert term 在打开一个水平terminal
 Ctrl + \ Ctrl + n 切换模式
@@ -322,6 +322,8 @@ m 设置标注 (mark)
 :.,$/val/v2/g 当前行到行末
 :set fenc=utf-8 指定文件编码格式
 q: 
+:%!xxd 二进制打开 (vim -b xxxx)
+:%!xxd -r  还原
 
 quickfix:
 :copen
