@@ -475,6 +475,7 @@ http.createServer(function(request, response){
 	if(fpath.length < _server_root.length) {
 		response.writeHead(403, {"Content-Type": "text/plain"});
 		response.end('403 Forbidden.');
+		return;
 	}
 	// if(pathname.indexOf('/file.json') === 0) return;
 	lib.pstatConvert(fpath, convertF, function(err, ret) {
