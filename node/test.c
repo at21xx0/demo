@@ -459,7 +459,7 @@ typedef struct f_t{
 void f_external_buffer_free(napi_env env, void *data, void *hint) {
 	(void)env;
 	(void)hint;
-	free(data - sizeof(f_buf));
+	free((void*)((uintptr_t)data - sizeof(f_buf)));
 }
 napi_value f_pause(napi_env env, const napi_callback_info info) {
 	napi_status status;
