@@ -1,3 +1,4 @@
+"use strict";
 var fs = require('fs');
 var events = require('events');
 var zlib = require('zlib');
@@ -17,8 +18,7 @@ var crypto = require('crypto');
 var readline = require('readline');
 
 var lib = require('./lib.js'); // ./lib.js
-
-H = new lib.H('name');
+let H = new lib.H('name');
 H.setName('h_name');
 console.log(H.getName());
 
@@ -68,7 +68,7 @@ eventEmitter.removeAllListeners();
 
 // eventEmitter.emit('error');
 
-buf = Buffer.alloc(4 * 1024);
+let buf = Buffer.alloc(4 * 1024);
 const buf2 = Buffer.alloc(10, 1, 'utf8'); // Buffer.alloc(size[, fill[, encoding]])
 const buf3 = Buffer.allocUnsafe(10); // no_init
 // Buffer.allocUnsafeSlow(size)
@@ -76,13 +76,13 @@ const buf4 = Buffer.from("test");
 const buf5 = Buffer.from([0x74, 0x65, 0x73, 0x74], "utf8")
 // console.log(buf4.toString('hex'));
 // encoding: ascii utf8 utf16le(2 - 4 byte) ucs2(utf16le) Base64 hex latin(binary) binary
-len = buf.write("[str]"); // buf.write(string[, offset[, length]][, encoding]);
+let len = buf.write("[str]"); // buf.write(string[, offset[, length]][, encoding]);
 console.log(buf.toString("utf8", 0, len), len); // buf.toString([encoding[, start[, end]]])
 console.log(buf.type);
 console.log(buf2.toJSON());
-json1 = '{"code":200}';
+let json1 = '{"code":200}';
 console.log(JSON.stringify(JSON.parse(json1)));
-buf6 = Buffer.concat([buf4, buf5]); // Buffer.concat(list[, totalLength])
+let buf6 = Buffer.concat([buf4, buf5]); // Buffer.concat(list[, totalLength])
 console.log(buf4.compare(buf5));
 buf.write("0123456789", 0);
 console.log(buf.toString());
@@ -225,7 +225,7 @@ async function fn()
 	return Promise.reject(null);
 	// return 'ret';
 }
-callbackFunction = util.callbackify(fn);
+let callbackFunction = util.callbackify(fn);
 callbackFunction((err, ret) => {console.log(err, ret);return err && err.hasOwnProperty('reason') && err.reason === null;});
 function Current1()
 {
@@ -236,7 +236,7 @@ function Current1()
 	};
 }
 util.inherits(Current1, lib.H);
-c1 = new Current1();
+let c1 = new Current1();
 c1.log();
 // console.log(c1.i); 5
 console.log(c1.id); // undefined
@@ -386,7 +386,7 @@ console.log(path.sep, path.delimiter);
 
 
 // n = 1;
-var server = net.createServer(function(connect){ // {localAddress: '0.0.0.0'}
+let server = net.createServer(function(connect){ // {localAddress: '0.0.0.0'}
 	// console.log("n: ", i++);
 	connect.on("end", function() {
 		console.log("server_close");
@@ -395,7 +395,7 @@ var server = net.createServer(function(connect){ // {localAddress: '0.0.0.0'}
 	connect.pipe(connect);
 });
 server.listen(8084, () => void(0));
-client = net.connect({port: 8084}, function() {
+let client = net.connect({port: 8084}, function() {
 	console.log("client_connect");
 }); // {host: localhost, port: 8084}
 client.on("end", () => console.log("client_close"));
@@ -685,7 +685,7 @@ http.createServer(function(request, response){
 }).listen(2667);
 console.log('server: http://127.0.0.1:2667/');
 
-request1 = http.request({host: '127.0.0.1', port: 2667, path: '/index.html'}, function(response){
+let request1 = http.request({host: '127.0.0.1', port: 2667, path: '/index.html'}, function(response){
 	var bf = [];
 	response.on('data', (data) => bf.push(data));
 	response.on('end', function(){

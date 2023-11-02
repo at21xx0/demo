@@ -340,6 +340,9 @@ function pstatConvert(fpath, convertF = null, callback = null) { // callbackEnd
 	if(callback === null)
 		callback = convertF, convertF = null;
 	convertF = convertF || pstatConvert_defaultF;
+	if(!pstatConvert_cache[convertF]) {
+		pstatConvert_cache[convertF] = {};
+	}
 	fs.stat(fpath, function(err, stats){
 		if(err) {
 			callback(err, null);
@@ -350,9 +353,6 @@ function pstatConvert(fpath, convertF = null, callback = null) { // callbackEnd
 			return;
 		}
 		let tmpObj = pstatConvert_cache[convertF];
-		if(!tmpObj) {
-			tmpObj = pstatConvert_cache[convertF] = {};
-		}
 		let ctime = stats.ctime;
 		let t = tmpObj[fpath];
 		let cblist = [];
@@ -398,8 +398,10 @@ function pstatConvert(fpath, convertF = null, callback = null) { // callbackEnd
 				return;
 			}
 			ret.ct = files.length;
-			if(files.length === 0)
+			if(files.length === 0) {
+				delete ret.callback;
 				callback(null, ret);
+			}
 			files.forEach(forEachF);
 		});
 	});
@@ -413,7 +415,7 @@ function formDataParse(src, callback, callbackEnd) {
 	let isPaused = false;
 	const reg_1 = /[\w]+="([^"]+|\\")+"/g;
 	if(s.indexOf('multipart/form-data') === -1) {
-		callbackEnd();
+		callbackEnd(new Error('Bad Request'));
 		return false;
 	}
 	s = '\r\n--' + s.split('boundary=')[1];
@@ -422,20 +424,32 @@ function formDataParse(src, callback, callbackEnd) {
 		let i = 0;
 		let j = 0;
 		if(prevBuffer !== null) {
-			data = Buffer.concat([prevBuffer, data], prevBuffer.length + data.length);
+			if(wStatus === 1 && (j = data.indexOf('\r\n\r\n', 0)) !== -1) { 
+				let prevBuf = Buffer.concat([prevBuffer, data.slice(0, j + 4)], prevBuffer.length + j + 4);
+				data = data.slice(j + 4, data.length);
+				prevBuffer = null;
+				// wStatus = 3;
+				dataF(prevBuf);
+				if(dst === null) {
+					prevBuffer = data;
+					return;
+				}
+			} else
+				data = Buffer.concat([prevBuffer, data], prevBuffer.length + data.length);
 			prevBuffer = null;
 		}
 		while(1) {
 			if(wStatus === 2) {
 				j = data.indexOf(boundary, i);
 				if(j === -1) {
-					j = data.lastIndexOf('\r', data.length - boundary.length);
-					if(j !== -1 && boundary.indexOf(data.slice(j, data.length)) === 0) {
-						if(dst.write(data.slice(i, j)) === false) {
+					let buf = data.slice(data.length - boundary.length, data.length);
+					j = buf.lastIndexOf('\r');
+					if(j !== -1 && (buf = buf.slice(j, buf.length)) !== null && boundary.indexOf(buf) === 0) {
+						if(dst.write(data.slice(i, data.length - boundary.length + j)) === false) {
 							src.pause();
 							isPaused = true;
 						}
-						prevBuffer = data.slice(j, data.length);
+						prevBuffer = buf;
 					} else if(dst.write(data.slice(i, data.length)) === false) {
 						src.pause();
 						isPaused = true;
@@ -451,20 +465,21 @@ function formDataParse(src, callback, callbackEnd) {
 				}
 				i = j + boundary.length;
 				wStatus = 1;
-				if(i === data.length)
-					break;
+				isPaused = false;
+				dst.close(); // dst.destroy();
+				dst = null;
 			} else if(wStatus === 1) {
-				if(dst) {
-					isPaused = false;
-					dst.close(); // dst.destroy();
-					dst = null;
-				}
 				j = data.indexOf('\r\n\r\n', i);
 				if(j === -1) {
-					if(data.length - i === 4 && data.indexOf('--\r\n', i) === i)
-						void(0); // break;
-					else if(i !== data.length)
-						prevBuffer = data.slice(i, data.length);
+					if(data.length - i === 4 && data.indexOf('--\r\n', i) === i) {
+						callback(null);
+						callbackEnd(null);
+					} else {
+						if(i !== data.length)
+							prevBuffer = data.slice(i, data.length);
+						if(src.isPaused())
+							src.resume();
+					}
 					break;
 				}
 				i += 2;
@@ -490,35 +505,41 @@ function formDataParse(src, callback, callbackEnd) {
 					} else if(typeof r === "object" && r.on) {
 						dst = r;
 						dst.on('drain', function() {
-							src.resume();
-							isPaused = false;
+								src.resume();
+								isPaused = false;
 						});
 					}
 					if(prevBuffer !== null) {
 						let prevBuf = prevBuffer;
 						prevBuffer = null;
 						dataF(prevBuf);
+					} else if(src.isPaused()) {
+						src.resume();
 					}
-				}
+				};
 				var r = callback(obj);
 				if(!r) {
 					if(src.isPaused() === false)
 						src.pause();
-					prevBuffer = data.slice(i, data.length);
-					return;
+					if(i !== data.length)
+						prevBuffer = data.slice(i, data.length);
+					break;
 				} else
 					obj.pipe(r);
 			} else if(wStatus === 0) {
 				i = data.indexOf(boundary.slice(2, boundary.length), i);
-				if(i === -1)
-					throw new Error('???');
+				if(i === -1) {
+					callbackEnd(new Error('Bad Request'));
+					break;
+				}
 				wStatus = 1;
 				i += boundary.length - 2;
 			}
 		}
 	};
 	src.on('data', dataF);
-	src.on('end', () => {callback(null);callbackEnd()});
+	// src.on('end', () => {callback(null);callbackEnd()});
+	src.on('error', callbackEnd);
 	return true;
 }
 

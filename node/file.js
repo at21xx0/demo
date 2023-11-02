@@ -6,6 +6,7 @@ var url = require('url');
 var querystring = require('querystring');
 var http = require('http');
 var process = require('process');
+var os = require('os');
 var lib = require('./lib.js');
 
 
@@ -136,8 +137,7 @@ function jsonAction(request, response, callback) {
 		response.writeHead(200, {"Content-Type": "application/json"});
 		if(!data) {
 			response.end('{}');
-		}
-		else if(typeof data === 'object') {
+		} else if(typeof data === 'object') {
 			response.end(JSON.stringify(data));
 		} else if(typeof data === 'string') {
 			response.end(data);
@@ -212,8 +212,7 @@ function v7_path(request, response) {
 			if(!pathPerm(fpath, token))
 				return pd;
 			fs.mkdir(path.join(fpath, dst), {recursive: true}, ecb);
-		}
-		else if(action === 'rename') {
+		} else if(action === 'rename') {
 			if(!pathPerm(fpath, token))
 				return pd;
 			fs.rename(path.join(fpath, files[0]), path.join(fpath, dst), ecb);
@@ -251,7 +250,6 @@ function v7_path(request, response) {
 }
 function v7_upload2(request, response) {
 	if(request.method !== "POST") {
-		console.log('method:', request.method);
 		response.writeHead(405, {"Content-Type": "text/plain"});
 		response.end('405 Method Not Allowed.');
 		return;
@@ -371,7 +369,6 @@ function v7_upload2(request, response) {
 			delete token.allowFiles[prevFileMD5];
 			prevFileMD5 = null;
 		}
-		// console.log('prev', obj === null, prevName, prevFileMD5);
 		if(obj === null)
 			return;
 		if(obj.filename) {
@@ -422,8 +419,8 @@ function v7_upload2(request, response) {
 		}
 		prevName = obj.name;
 		return (data) => s += data.toString(); // invalid
-	}, function() {
-		retJSON({err: lastError, failedList: failedList});
+	}, function(err) {
+		retJSON({err: lastError || err, failedList: failedList});
 	});
 }
 var l_map = {'/api/v7/user': v7_user, '/api/v7/upload2': v7_upload2, '/api/v7/path': v7_path};
@@ -542,14 +539,22 @@ http.createServer(function(request, response){
 			this.fn = file.fn + ((file.isDir)?'/':'');
 			// Object.assign(this, {href: ''});
 			return true;
-		}
+		};
 		response.writeHead(200, {"Content-Type": "text/html"});
 		response.end(htmlO.index);
 	});
 	return;
 }).listen(8080);
 
-console.log('server: http://127.0.0.1:8080/');
+(function(proto, port) {
+	let tmp = Object.values(os.networkInterfaces());
+	for(let values of tmp)
+		for(let value of values) {
+			let url = proto + '://' + ((value.family === 'IPv6')?'[' + value.address + ']':value.address) + ':' + port.toString() + '/';
+
+			console.log(url);
+		}
+})("http", 8080);
 
 
 
