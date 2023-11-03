@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>test</title>
+</head>
+<body>
+<form action="/test5" method="post">
+    username:<input type="text" name="user" placeholder="username" /> <br />
+    password:<input type="password" name="pass" placeholder="password" /> <br />
+    <input type="submit" value="submit" /> <br />
+</form>
+<form action="/test6" method="post" enctype="multipart/form-data">
+	test6:<input type="file" name="file" /> <br />
+	<input type="submit" value="submit" /> <br />
+</form>
+<form action="/test7" method="post" enctype="multipart/form-data">
+	test7:<input type="file" multiple="multiple" name="file" /> <br />
+	<input type="submit" value="submit" /> <br />
+</form>
+</body>
+</html>
