@@ -124,6 +124,7 @@ g] // :ts // tags
 :tp // prev tag
 :ta // next
 
+] + Ctrl + i
 
 
 
@@ -320,6 +321,10 @@ m 设置标注 (mark)
 	ma 标记当前行
 	'a 跳转到标记的行
 	[a-zA-Z0-9] 皆可替换a
+	'' 跳转到上一次跳转
+	Ctrl + i 前进
+	Ctrl + o 后退
+	:jumps 可跳转列表
 << 反缩进
 >> 缩进
 , 反向t/T/f/F
